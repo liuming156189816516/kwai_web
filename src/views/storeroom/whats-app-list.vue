@@ -2,32 +2,20 @@
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
-    <el-form :inline="true" size="small" style="margin-top: 10px;" class="queryForm">
+    <el-form :inline="true" class="queryForm" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="model1.account" clearable placeholder="请输入账号" />
+        <el-input v-model="model1.account" clearable placeholder="请输入账号"/>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID" />
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="model1.do_main_url" clearable placeholder="请输入域名" />
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡" />
+        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID"/>
       </el-form-item>
       <el-form-item>
         <el-select v-model="model1.limit_err" clearable filterable multiple placeholder="请选择功能限制">
-          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.faccount" clearable placeholder="请输入所属用户" />
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="model1.reason" clearable placeholder="请输入原因" />
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="model1.card_account" clearable placeholder="请输入信用卡账户" />
+        <el-input v-model="model1.reason" clearable placeholder="请输入原因"/>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
@@ -40,34 +28,16 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{onlineHandle(command)}">
           <el-button type="primary"> 批量上线
-            <i class="el-icon-arrow-down el-icon--right" />
+            <i class="el-icon-arrow-down el-icon--right"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
-              v-for="(item, idx) in onlineOption"
-              :id="idx"
-              :key="idx"
-              :command="{item,idx}"
-              :disabled="idx==0||checkIdArray.length==0"
+                v-for="(item, idx) in onlineOption"
+                :id="idx"
+                :key="idx"
+                :command="{item,idx}"
+                :disabled="idx==0||checkIdArray.length==0"
             >
-              {{ item.label }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-form-item>
-      <el-form-item>
-        <el-dropdown trigger="click" @command="(command)=>{handleAllConfigFun(command)}">
-          <el-button type="primary">全局配置项
-            <i class="el-icon-arrow-down el-icon--right" />
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              v-for="(item, idx) in allConfigOption"
-              v-show="item.label"
-              :key="idx"
-              :command="{item,idx}"
-            >
-              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -76,11 +46,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
           <el-button type="primary">批量操作
-            <i class="el-icon-arrow-down el-icon--right" />
+            <i class="el-icon-arrow-down el-icon--right"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon" />
+              <i :class="'el-icon-' + item.icon"/>
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -92,74 +62,74 @@
       <div :class="[!showGroup?'group_mian_hide':'']">
         <div class="group_head_warp">
           <div class="group_head" @click="changeGroup(0, 'clear')">
-            <i class="el-icon-d-arrow-left" @click="showGroup=false" />
+            <i class="el-icon-d-arrow-left" @click="showGroup=false"/>
             {{ $t('sys_g049') }} ({{ numGroupTotal }})
           </div>
           <div class="group_icon">
             <el-popover v-model="search_icon" placement="top" width="230">
               <p>
                 <el-select
-                  v-model="model1.group_name"
-                  :placeholder="$t('sys_c053')"
-                  clearable
-                  filterable
-                  size="small"
-                  style="width:100%;"
+                    v-model="model1.group_name"
+                    :placeholder="$t('sys_c053')"
+                    clearable
+                    filterable
+                    size="small"
+                    style="width:100%;"
                 >
-                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
+                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
                 </el-select>
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="search_icon=false">{{ $t('sys_c023') }}</el-button>
                 <el-button size="mini" type="primary" @click="initNumberGroup">{{ $t('sys_c024') }}</el-button>
               </div>
-              <i slot="reference" class="el-icon-search" style="margin-right: 10px;" />
+              <i slot="reference" class="el-icon-search" style="margin-right: 10px;"/>
             </el-popover>
             <el-popover v-model="addVisible" placement="top" width="230">
               <p>
                 <el-input
-                  v-model="group_name"
-                  :placeholder="$t('sys_c112')"
-                  maxlength="10"
-                  show-word-limit
-                  size="small"
-                  @input="changeInput"
+                    v-model="group_name"
+                    :placeholder="$t('sys_c112')"
+                    maxlength="10"
+                    show-word-limit
+                    size="small"
+                    @input="changeInput"
                 />
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="addVisible=false">{{ $t('sys_c023') }}</el-button>
                 <el-button
-                  :disabled="!group_name.trim()"
-                  :loading="ipLoading"
-                  size="mini"
-                  type="primary"
-                  @click="addGroup(0, 0)"
+                    :disabled="!group_name.trim()"
+                    :loading="ipLoading"
+                    size="mini"
+                    type="primary"
+                    @click="addGroup(0, 0)"
                 >{{ $t('sys_c024') }}
                 </el-button>
               </div>
-              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)" />
+              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)"/>
             </el-popover>
           </div>
         </div>
-        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary" />
+        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary"/>
         <template v-else>
           <div :style="{height:(cliHeight-40)+'px'}" class="group_warp">
             <template v-if="numberGroupList.length>0">
               <transition-group name="fade">
                 <div
-                  v-for="(item, idx) in numberGroupList"
-                  :key="idx"
-                  :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"
-                  :draggable="true"
-                  @click="changeGroup(item, idx)"
-                  @dragstart="dragStart(idx)"
-                  @drop="handleMoveSort(idx)"
-                  @dragover.prevent
+                    v-for="(item, idx) in numberGroupList"
+                    :key="idx"
+                    :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"
+                    :draggable="true"
+                    @click="changeGroup(item, idx)"
+                    @dragstart="dragStart(idx)"
+                    @drop="handleMoveSort(idx)"
+                    @dragover.prevent
                 >
                   <div class="group_name">
                     <i
-                      :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
-                      class="left_icon"
+                        :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
+                        class="left_icon"
                     />
                     <span class="group_text">{{ item.name }}</span>
                     <span>({{ item.count }})</span>
@@ -167,50 +137,50 @@
                   <div class="group_icon" style="">
                     <div v-if="!item.name.includes('有效账号')" class="collect_icon">
                       <i
-                        v-if="item.status"
-                        slot="reference"
-                        class="el-icon-star-on"
-                        style="color: #ffda00;font-size: 20px"
-                        @click.stop="handleCollectFun(item,idx,0)"
+                          v-if="item.status"
+                          slot="reference"
+                          class="el-icon-star-on"
+                          style="color: #ffda00;font-size: 20px"
+                          @click.stop="handleCollectFun(item,idx,0)"
                       />
-                      <i v-else slot="reference" class="el-icon-star-off" @click.stop="handleCollectFun(item,idx,1)" />
+                      <i v-else slot="reference" class="el-icon-star-off" @click.stop="handleCollectFun(item,idx,1)"/>
                     </div>
                     <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
                         <el-input
-                          v-model="group_name"
-                          :placeholder="$t('sys_c112')"
-                          clearable
-                          maxlength="10"
-                          show-word-limit
-                          size="small"
-                          @input="changeInput"
+                            v-model="group_name"
+                            :placeholder="$t('sys_c112')"
+                            clearable
+                            maxlength="10"
+                            show-word-limit
+                            size="small"
+                            @input="changeInput"
                         />
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{
-                          $t('sys_c023')
-                        }}
+                            $t('sys_c023')
+                          }}
                         </el-button>
                         <el-button
-                          :disabled="!group_name.trim()"
-                          :loading="ipLoading"
-                          size="mini"
-                          type="primary"
-                          @click="addGroup(item, 2)"
+                            :disabled="!group_name.trim()"
+                            :loading="ipLoading"
+                            size="mini"
+                            type="primary"
+                            @click="addGroup(item, 2)"
                         >确定
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" />
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)"/>
                     </el-popover>
                     <el-popconfirm
-                      :cancel-button-text="$t('sys_c023')"
-                      :confirm-button-text="$t('sys_c024')"
-                      :title="$t('sys_c128')"
-                      icon="el-icon-info"
-                      @confirm="delGroup(item, idx)"
+                        :cancel-button-text="$t('sys_c023')"
+                        :confirm-button-text="$t('sys_c024')"
+                        :title="$t('sys_c128')"
+                        icon="el-icon-info"
+                        @confirm="delGroup(item, idx)"
                     >
-                      <i slot="reference" class="el-icon-delete" @click.stop />
+                      <i slot="reference" class="el-icon-delete" @click.stop/>
                     </el-popconfirm>
                   </div>
                 </div>
@@ -224,110 +194,52 @@
         <div class="tab_check_warp">
           <span v-if="!showGroup" style="margin-right: 8px;cursor: pointer; color:#409eff;" @click="showGroup=true">
             <el-tooltip content="展开分组" effect="dark" placement="top">
-              <i class="el-icon-d-arrow-right" />
+              <i class="el-icon-d-arrow-right"/>
             </el-tooltip>
           </span>
-          <i class="el-icon-info" />
-          <div v-html="$t('sys_mat007',{value:checkIdArray.length})" />
+          <i class="el-icon-info"/>
+          <div v-html="$t('sys_mat007',{value:checkIdArray.length})"/>
         </div>
         <u-table
-          ref="serveTable"
-          v-loading="loading"
-          :data="accountDataList"
-          :height="cliHeight"
-          border
-          use-virtual
-          element-loading-spinner="el-icon-loading"
-          row-key="id"
-          show-body-overflow="title"
-          style="width: 100%;"
-          @sort-change="handleSortChange"
-          @row-click="rowSelectChange"
-          @selection-change="handleSelectionChange"
+            ref="serveTable"
+            v-loading="loading"
+            :data="accountDataList"
+            :height="cliHeight"
+            border
+            element-loading-spinner="el-icon-loading"
+            row-key="id"
+            show-body-overflow="title"
+            style="width: 100%;"
+            use-virtual
+            @sort-change="handleSortChange"
+            @row-click="rowSelectChange"
+            @selection-change="handleSelectionChange"
         >
-          <u-table-column type="selection" :reserve-selection="true" width="55" />
+          <u-table-column :reserve-selection="true" type="selection" width="55"/>
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
-              <el-avatar v-if="scope.row.head" :src="scope.row.head" />
-              <el-avatar v-else icon="el-icon-user-solid" />
+              <el-avatar v-if="scope.row.head" :src="scope.row.head"/>
+              <el-avatar v-else icon="el-icon-user-solid"/>
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" width="100" />
+          <u-table-column label="账号" prop="account" width="100"/>
           <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
             <template slot-scope="scope">
-              {{ scope.row.device_id ? scope.row.device_id : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="信用卡" prop="credit_card_number" show-overflow-tooltip width="100">
-            <template slot-scope="scope">
-              {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="域名" prop="do_main_url" show-overflow-tooltip sortable="custom" width="100">
-            <template slot-scope="scope">
-              {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="余额（u）" prop="balance" sortable="custom" width="130" />
-          <u-table-column label="信用卡余额（u）" prop="card_balance" show-overflow-tooltip sortable width="180">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="绑卡状态" prop="bind_card_status" width="120">
-            <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
-                <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="(item,idx) in bindCardStatusList"
-                    :key="idx"
-                    :class="{'dropdown_selected':item.value==model1.bind_card_status}"
-                    :command="idx"
-                  >{{ item.label }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property], bindCardStatusList) || '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="充值状态" prop="pay_status" width="120">
-            <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
-                <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="(item,idx) in payStatusList"
-                    :key="idx"
-                    :class="{'dropdown_selected':item.value==model1.pay_status}"
-                    :command="idx"
-                  >{{ item.label }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property], payStatusList) || '-' }}
+              {{ scope.row.device_id ? scope.row.device_id === '0' ? '-' : scope.row.device_id : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="账号状态" prop="status" width="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
-                  <i class="el-icon-arrow-down el-icon--right" />
+                  <i class="el-icon-arrow-down el-icon--right"/>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    v-for="(item,idx) in accountOptions"
-                    :key="idx"
-                    :class="{'dropdown_selected':idx==model1.status}"
-                    :command="idx"
+                      v-for="(item,idx) in accountOptions"
+                      :key="idx"
+                      :class="{'dropdown_selected':idx==model1.status}"
+                      :command="idx"
                   >{{ item == '' ? $t('sys_l053') : item }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -337,18 +249,18 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" prop="use_status" width="100">
+          <u-table-column label="使用状态" prop="use_status"  width="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
-                  <i class="el-icon-arrow-down el-icon--right" />
+                  <i class="el-icon-arrow-down el-icon--right"/>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    v-for="(item,index) in statusList"
-                    :key="index"
-                    :class="{'dropdown_selected':item.value==model1.use_status}"
-                    :command="item.value"
+                      v-for="(item,index) in statusList"
+                      :key="index"
+                      :class="{'dropdown_selected':item.value==model1.use_status}"
+                      :command="item.value"
                   >{{ item.label }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -367,20 +279,19 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="原因" prop="reason" show-overflow-tooltip width="130">
+          <u-table-column label="原因" prop="reason" show-overflow-tooltip minWidth="130">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
+          <u-table-column label="备注" prop="remark" show-overflow-tooltip minWidth="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
-                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;" />
+                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;"/>
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" prop="faccount" width="100" />
           <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
@@ -395,14 +306,14 @@
 
         <div class="layui_page">
           <el-pagination
-            :current-page.sync="model1.page"
-            :page-size="model1.limit"
-            :page-sizes="pageOption"
-            :total="model1.total"
-            background
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="homelHandleSize"
-            @current-change="homeHandleCurrent"
+              :current-page.sync="model1.page"
+              :page-size="model1.limit"
+              :page-sizes="pageOption"
+              :total="model1.total"
+              background
+              layout="total, sizes, prev, pager, next, jumper"
+              @size-change="homelHandleSize"
+              @current-change="homeHandleCurrent"
           />
         </div>
 
@@ -410,32 +321,32 @@
     </div>
     <!-- 批量操作 -->
     <el-dialog
-      :close-on-click-modal="false"
-      :title="batchOptionData.title"
-      :visible.sync="batchOptionData.show"
-      :width="'550px'"
-      center
+        :close-on-click-modal="false"
+        :title="batchOptionData.title"
+        :visible.sync="batchOptionData.show"
+        :width="'550px'"
+        center
     >
       <el-form
-        v-if="batchOptionData.show"
-        ref="refForm"
-        :model="batchOptionData.ipForm"
-        :rules="batchOptionData.ipRules"
-        label-width="100px"
-        size="small"
+          v-if="batchOptionData.show"
+          ref="refForm"
+          :model="batchOptionData.ipForm"
+          :rules="batchOptionData.ipRules"
+          label-width="100px"
+          size="small"
       >
         <!-- 移至其他分组 -->
         <template v-if="batchOptionData.btnLabel === '移至其他分组'">
           <el-form-item :label="$t('sys_c053') + ':'" label-width="140px" prop="group_id">
             <el-select
-              v-model="batchOptionData.ipForm.group_id"
-              :placeholder="$t('sys_c053')"
-              clearable
-              filterable
-              size="small"
-              style="width:100%;"
+                v-model="batchOptionData.ipForm.group_id"
+                :placeholder="$t('sys_c053')"
+                clearable
+                filterable
+                size="small"
+                style="width:100%;"
             >
-              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-form-item>
           <el-form-item label-width="0">
@@ -447,13 +358,13 @@
         <template v-if="batchOptionData.btnLabel === '批量修改备注' ">
           <el-form-item label-width="0" prop="remock_text">
             <el-input
-              v-model="batchOptionData.ipForm.remock_text"
-              :placeholder="$t('sys_mat021')"
-              :rows="6"
-              maxlength="50"
-              show-word-limit
-              size="small"
-              type="textarea"
+                v-model="batchOptionData.ipForm.remock_text"
+                :placeholder="$t('sys_mat021')"
+                :rows="6"
+                maxlength="50"
+                show-word-limit
+                size="small"
+                type="textarea"
             />
           </el-form-item>
         </template>
@@ -461,12 +372,12 @@
         <template v-if="batchOptionData.btnLabel === '分配设备ID' ">
           <el-form-item label-width="0" prop="deviceIdText">
             <el-input
-              v-model="batchOptionData.ipForm.deviceIdText"
-              placeholder="请输入设备ID"
-              :rows="6"
-              show-word-limit
-              size="small"
-              type="textarea"
+                v-model="batchOptionData.ipForm.deviceIdText"
+                :rows="6"
+                placeholder="请输入设备ID"
+                show-word-limit
+                size="small"
+                type="textarea"
             />
           </el-form-item>
         </template>
@@ -474,9 +385,9 @@
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
           <el-button @click="batchOptionData.show = false">{{ $t('sys_c023') }}</el-button>
           <el-button
-            :loading="isLoading"
-            type="primary"
-            @click="submitSetBtn('refForm')"
+              :loading="isLoading"
+              type="primary"
+              @click="submitSetBtn('refForm')"
           >确定
           </el-button>
         </el-form-item>
@@ -484,12 +395,12 @@
     </el-dialog>
     <!-- 弹出框 -->
     <el-dialog
-      :close-on-click-modal="false"
-      :title="model.title"
-      :visible.sync="model.show"
-      :width="model.width"
-      center
-      @close="closeModal"
+        :close-on-click-modal="false"
+        :title="model.title"
+        :visible.sync="model.show"
+        :width="model.width"
+        center
+        @close="closeModal"
     >
       <div class="modalContent">
         <template v-if="model.title ==='余额校正工具'">
@@ -505,7 +416,7 @@
 </template>
 
 <script>
-import { successTips, resetPage, getLabelByVal, getLabelArrByVal, deepClone } from '@/utils/index'
+import {successTips, resetPage, getLabelByVal, getLabelArrByVal, deepClone} from '@/utils/index'
 import {
   getaccountinfolist,
   getaccountgrouplist,
@@ -538,26 +449,17 @@ export default {
         page: 1,
         limit: 100,
         total: 0,
-        ipCtime: '',
         account: '',
-        staff_no: '',
         group_id: '',
         custom_popover: '960px',
         select_sort: 'account',
         status: '',
         use_status: -1,
-        account_type: '',
         group_name: '',
-        credit_card_number: '',
-        do_main_url: '',
         device_id: '',
-        faccount: '',
         limit_err: [],
         sort: '',
-        bind_card_status: '',
-        pay_status: '',
         reason: '',
-        card_account: ''
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -639,34 +541,9 @@ export default {
       ],
       limitErrList: [
         {
-          label: '小火苗',
-          value: '1',
-          type: '',
-        },
-        {
           label: '私发',
           value: '2',
           type: '',
-        },
-        {
-          label: '上传视频',
-          value: '3',
-          type: 'success',
-        },
-        {
-          label: '信用卡支付',
-          value: '4',
-          type: 'danger',
-        },
-        {
-          label: '绑卡',
-          value: '5',
-          type: 'danger',
-        },
-        {
-          label: '账号权重过低',
-          value: '6',
-          type: 'danger',
         },
       ],
       bindCardStatusList: [
@@ -740,16 +617,16 @@ export default {
           deviceIdText: ''
         },
         ipRules: {
-          use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
-          deviceIdText: [{ required: true, message: '请输入设备ID', trigger: 'change' }],
-          iptype: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          ip_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          seat_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-          staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          use_status: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          expire_time: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          group_id: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          remock_text: [{required: true, message: this.$t('sys_mat021'), trigger: 'blure'}],
+          deviceIdText: [{required: true, message: '请输入设备ID', trigger: 'change'}],
+          iptype: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          ip_id: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          allocat_role: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          seat_type: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          staffCheck: [{type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change'}],
         },
         btnLabel: ''
       },
@@ -773,47 +650,33 @@ export default {
 
     moveRules() {
       return {
-        checked_group: [{ required: true, message: this.$t('sys_c051'), trigger: 'change' }],
+        checked_group: [{required: true, message: this.$t('sys_c051'), trigger: 'change'}],
       }
     },
     groupRules() {
       return {
-        title: [{ required: true, message: this.$t('sys_mat018'), trigger: 'blur' }],
-        content: [{ required: true, message: this.$t('sys_mat020'), trigger: 'blur' }],
+        title: [{required: true, message: this.$t('sys_mat018'), trigger: 'blur'}],
+        content: [{required: true, message: this.$t('sys_mat020'), trigger: 'blur'}],
       }
     },
     // 批量上线
     onlineOption() {
       return [
-        { label: '---默认通道---', index: 0, api: null },
-        { label: '批量上线', index: 0, api: dobatchlogin },
-        { label: '批量快速上线', index: 0, api: dobatchfastlogin },
+        {label: '---默认通道---', index: 0, api: null},
+        {label: '批量上线', index: 0, api: dobatchlogin},
+        {label: '批量快速上线', index: 0, api: dobatchfastlogin},
       ]
     },
     // 批量操作
     batchOption() {
       return [
-        // { icon: 'bottom', label: '批量下线', index: 0, api: dobatchlogout },
-        { icon: 'rank', label: '移至其他分组', index: 1, api: doupgroup },
-        // { icon: 'refresh', label: '释放ip', index: 2, api: dofreedip },
-        { icon: 'download', label: '批量导出', index: 3, api: dooutputaccount },
-        { icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount },
-        { icon: 'edit', label: '批量修改备注', index: 5, api: doupremark },
-        { icon: 'edit', label: '批量退款', index: 6, api: dobatchaccountrefundApi },
-        { icon: 'unlock', label: '解绑信用卡', index: 7, api: unbindcardApi },
-        { icon: 'unlock', label: '解绑域名', index: 8, api: unbinddomainApi },
-        { icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi },
-        { icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi },
-        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi },
-        { icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi },
-        { icon: 's-tools', label: '分配设备ID', index: 13, api: setassigndeviceidApi },
-      ]
-    },
-    // 全局配置
-    allConfigOption() {
-      return [
-        // { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip },
-        { icon: 'help', label: '余额校正工具', index: 1, api: accountbalancecorrectiontoolApi },
+        {icon: 'rank', label: '移至其他分组', index: 1, api: doupgroup},
+        {icon: 'download', label: '批量导出', index: 3, api: dooutputaccount},
+        {icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount},
+        {icon: 'edit', label: '批量修改备注', index: 5, api: doupremark},
+        {icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi},
+        {icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi},
+        {icon: 's-tools', label: '分配设备ID', index: 13, api: setassigndeviceidApi},
       ]
     },
   },
@@ -858,7 +721,7 @@ export default {
     // 获取分组列表数据
     async initNumberGroup() {
       this.loadingGroup = true;
-      const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
+      const {data} = await getaccountgrouplist({name: this.model1.group_name, page: 1, limit: 100});
       console.log('data', data)
       this.search_icon = false;
       this.loadingGroup = false;
@@ -879,16 +742,10 @@ export default {
         sort: this.model1.sort, // 排序
         status: this.model1.status || -1,
         use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
-        credit_card_number: this.model1.credit_card_number,
-        do_main_url: this.model1.do_main_url,
         device_id: this.model1.device_id,
-        faccount: this.model1.faccount,
         limit_err: limitErr,
         group_id: this.model1.group_id, // 分组
-        bind_card_status: this.model1.bind_card_status || 0,
-        pay_status: this.model1.pay_status || 0,
         reason: this.model1.reason,
-        card_account: this.model1.card_account
       }
 
       getaccountinfolist(params).then(res => {
@@ -897,8 +754,6 @@ export default {
 
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
-          item.bind_card_status = item.bind_card_status ? String(item.bind_card_status) : '0'
-          item.pay_status = item.pay_status ? String(item.pay_status) : '0'
           const limitArr = []
           if (item.limit_err) {
             item.limit_err.forEach(one => {
@@ -918,20 +773,15 @@ export default {
     restQueryBtn() {
       this.model1.account = '';
       this.model1.credit_card_number = '';
-      this.model1.do_main_url = '';
       this.model1.device_id = '';
       this.model1.group_id = '';
       this.checkIdArray = [];
       this.checkAccount = [];
       this.selectArray = []
       this.model1.select_sort = 'account';
-      this.model1.faccount = ''
       this.model1.sort = ''
       this.model1.limit_err = []
-      this.model1.bind_card_status = ''
-      this.model1.pay_status = ''
-      this.this.model1.reason = ''
-      this.this.model1.card_account = ''
+      this.model1.reason = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -955,35 +805,6 @@ export default {
         this.popConfirm(command);
       }
     },
-    // 全局配追
-    handleAllConfigFun(command) {
-      this.model.itemApi = deepClone(command)
-      const reqApi = command.item.api;
-      const label = command.item.label
-      const params = {}
-      if (label === 'IP校正工具') {
-        console.log('params', params)
-      }
-      if (label === '余额校正工具') {
-        console.log('params', params)
-      }
-      reqApi(params).then(res => {
-        if (res.msg === 'success') {
-          this.model.data = res.data
-          this.model.show = true
-          if (label === '余额校正工具') {
-            this.model.title = label
-            const arr = res.data.message.split('\n')
-            this.model.dataList = []
-            arr.forEach(item => {
-              if (item) {
-                this.model.dataList.push(item)
-              }
-            })
-          }
-        }
-      })
-    },
     // 批量上线
     onlineHandle(command) {
       this.batchOptionData.ipForm.ip_id = '';
@@ -999,7 +820,7 @@ export default {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        beforeClose: function(action, instance, done) {
+        beforeClose: function (action, instance, done) {
           if (action === 'confirm') {
             const reqApi = command.item.api;
             const labelIndex = command.item.label
@@ -1007,10 +828,10 @@ export default {
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
             if (labelIndex === '批量退款') { // 批量退款
-              params = { accounts: that.checkAccount, }
+              params = {accounts: that.checkAccount,}
             }
             if (labelIndex === '批量充值' || labelIndex === '批量检测' || labelIndex === '绑定信用卡') {
-              params = { accounts: that.checkAccount, }
+              params = {accounts: that.checkAccount,}
             }
 
             if (labelIndex === '解绑信用卡' || labelIndex === '解绑域名') { // 解绑信用卡1 // 解绑域名2
@@ -1040,7 +861,7 @@ export default {
           }
         }
       }).catch(() => {
-        that.$message({ type: 'info', message: that.$t('sys_c048') });
+        that.$message({type: 'info', message: that.$t('sys_c048')});
       })
     },
     // 批量操作 弹窗确认
@@ -1093,38 +914,17 @@ export default {
       this.initNumberList();
     },
     // 筛选项 排序
-    handleSortChange({ column, prop, order }) {
-      if (order === 'descending') { // 下降 倒序
-        switch (prop) {
-          case 'balance': // 消耗量
-            this.model1.sort = '-' + prop
-            break;
-          case 'do_main_url': // 消耗量
-            this.model1.sort = '-' + prop
-            break;
-        }
-      } else if (order === 'ascending') { // 上升 = 正序
-        switch (prop) {
-          case 'balance': // 消耗量
-            this.model1.sort = prop
-            break;
-          case 'do_main_url': // 消耗量
-            this.model1.sort = prop
-            break;
-        }
-      } else {
-        this.model1.sort = ''
-      }
+    handleSortChange({column, prop, order}) {
       this.initNumberList();
     },
     // 单行 点击勾选
     rowSelectChange(row, column, event) {
       const tableCell = this.$refs.serveTable;
       if (this.checkIdArray.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
+        tableCell.toggleRowSelection([{row: row, selected: false}]);
         return;
       }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      tableCell.toggleRowSelection([{row: row, selected: true}]);
     },
     // 勾选列表
     handleSelectionChange(arr) {
@@ -1141,10 +941,6 @@ export default {
         this.model1.status = row;
       } else if (idx === 2) {
         this.model1.use_status = Number(row);
-      } else if (idx === 3) {
-        this.model1.bind_card_status = Number(row);
-      } else if (idx === 4) {
-        this.model1.pay_status = Number(row);
       }
       this.initNumberList();
     },
@@ -1183,7 +979,7 @@ export default {
     },
     // 删除分组
     async delGroup(row) {
-      const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });
+      const res = await doaccountgroup({ptype: 3, del_id: [row.id]});
       if (res.code !== 0) return;
       this.groupIdx = 0;
       this.groupForm.group_id = '';
@@ -1216,7 +1012,7 @@ export default {
         status: value,
         id: item.id
       }
-      console.log('params',params)
+      console.log('params', params)
       doaccountgroup(params).then(res => {
         // if (res.msg === 'success') {
         //
@@ -1258,7 +1054,7 @@ export default {
       const sortMap = this.numberGroupList.map(item => {
         return item.id
       });
-      const res = await sortgroup({ list: sortMap });
+      const res = await sortgroup({list: sortMap});
       if (res.code !== 0) return;
     },
 
@@ -1275,14 +1071,14 @@ export default {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        beforeClose: function(action, instance, done) {
+        beforeClose: function (action, instance, done) {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
             setaccountunavailableApi().then(res => {
               if (res.msg === 'success') {
                 done();
                 instance.confirmButtonLoading = false;
-                that.$message({ type: 'info', message: '执行成功！' });
+                that.$message({type: 'info', message: '执行成功！'});
                 const params = {}
                 that.model.itemApi.item.api(params).then(res => {
                   if (res.msg === 'success') {
@@ -1303,7 +1099,7 @@ export default {
           }
         }
       }).catch(() => {
-        that.$message({ type: 'info', message: that.$t('sys_c048') });
+        that.$message({type: 'info', message: that.$t('sys_c048')});
       })
     },
     // 处理打开输入框无法输入问题
@@ -1779,16 +1575,19 @@ export default {
 .loading_icon {
   margin-top: 10px;
 }
-.queryForm{
-  &:after{
+
+.queryForm {
+  &:after {
     content: "";
     display: table;
     clear: both;
   }
-  ::v-deep .el-form-item{
+
+  ::v-deep .el-form-item {
     float: left;
   }
-  ::v-deep .el-form-item:last-of-type{
+
+  ::v-deep .el-form-item:last-of-type {
     float: right;
     //clear: both; /* 清除左右两边的浮动 */
   }

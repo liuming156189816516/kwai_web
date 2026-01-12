@@ -60,7 +60,6 @@
           </el-table-column>
           <el-table-column prop="success_num" :label="$t('sys_l060')" min-width="100" />
           <el-table-column prop="fail_num" :label="$t('sys_l061')" min-width="100" />
-          <el-table-column prop="faccount" show-overflow-tooltip label="所属用户" min-width="100" />
           <el-table-column prop="remark" show-overflow-tooltip label="备注" min-width="100">
             <template slot-scope="scope">
               {{ scope.row.remark ? scope.row.remark : '-' }}
