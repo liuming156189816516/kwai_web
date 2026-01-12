@@ -1,0 +1,297 @@
+ $dark_gray: #889aa4;
+ .login-box {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   border-radius: 20px;
+   display: flex;
+   padding: 0 100px 0 0;
+   align-items: center;
+   box-sizing: border-box;
+   background: #eef0f5;
+   border: 2px solid #14ac8e;
+   justify-content: space-between;
+  //  background-image: url(../../assets/login/login_bg.svg);
+   background-size: 100% 100%;
+   background-size: cover;
+   .login-left {
+    display: flex;
+    //  width: 630px;
+     height: 100%;
+     padding-top: 80px;
+     align-items: center;
+    //  margin-left: -80px;
+     box-sizing: border-box;
+     img {
+       width: 100%;
+      //  height: auto;
+       max-height: 90%;
+      //  max-width: 900px;
+     }
+   }
+   .login-form {
+     width: 400px;
+    //  padding: 30px;
+     flex-shrink: 0;
+     border-radius: 10px;
+    //  box-sizing: border-box;
+     position: relative;
+     border-radius: 10px;
+    //  -webkit-box-shadow: 0 0 20px 0 rgba(113,123,133,.2);
+    //  box-shadow: 0 0 20px 0 rgba(113,123,133,.2);
+     ::v-deep .el-input__prefix{
+      display: flex;
+       color: #000;
+       left: 10px;
+       align-items: center;
+       img{
+        height: 20px;
+        margin-left: 5px;
+       }
+     }
+     ::v-deep .el-input{
+      border-radius: 30px !important;
+     }
+     ::v-deep .el-input--prefix .el-input__inner{
+      padding-left: 50px;
+      border-color: #787878;
+      background: transparent;
+    }
+     .el-form-item{
+      margin-bottom: 30px;
+     }
+   }
+   .login-title {
+     display: flex;
+     align-items: center;
+    //  justify-content: space-between;
+     margin-bottom: 30px;
+     .title {
+       margin: 0;
+       font-size: 26px;
+      //  font-weight: normal;
+       white-space: nowrap;
+       margin-left: 30px;
+     }
+     img{
+      height: 36px;
+     }
+     .icon {
+       width: auto;
+     }
+   }
+   .account_type{
+     width: 100%;
+     display: flex;
+     font-size: 14px;
+     margin-bottom: 40px;
+     align-items: center;
+     .left_text{
+       margin-right: 10px;
+     }
+   }
+ }
+ .login-btn {
+   width: 100%;
+   height: 47px;
+   border: none;
+   font-size: 16px;
+   margin-top: 20px;
+   border-radius: 30px;
+   background: linear-gradient(to right, #5fceb8, #0daa8b);
+ }
+ .login-btn:hover{
+  background: linear-gradient(to right, #5fceb8, #0daa8b);
+ }
+ ::v-deep .el-input__suffix-inner{
+    height: 100%;
+    display: flex;
+    align-items: center;
+ }
+ .show-pwd {
+  //  position: absolute;
+  //  right: 10px;
+  //  top: 0;
+    font-size: 20px;
+    margin-right: 10px;
+    color: $dark_gray;
+    cursor: pointer;
+    user-select: none;
+ }
+ .login-container {
+   height: 100%;
+   width: 100%;
+   padding: 5%;
+   box-sizing: border-box;
+   position: relative;
+   overflow: hidden;
+   display: flex;
+   background: #eef0f5;
+   justify-content: center;
+   align-items: center;
+   // padding: 25px 25px;
+   // box-sizing: border-box;
+   .radius_left{
+    width: 800px;
+    height: 800px;
+    position: absolute;
+    left: -340px;
+    bottom: -340px;
+    border-radius: 50%;
+    background-color: #14ac8e;
+    // background: url("../../assets/login/right_bg.png");
+    // background-size:cover;
+   }
+   .radius_top{
+    width: 800px;
+    height: 800px;
+    position: absolute;
+    top: -340px;
+    right: -340px;
+    border-radius: 50%;
+    background-color: #14ac8e;
+   }
+   .change_lang{
+     position: absolute;
+     top: 40px;
+     right: 40px;
+     z-index: 1;
+     display: flex;
+     cursor: pointer;
+     align-items: center;
+     justify-content: center;
+     img{
+       width: 28px;
+       height: auto;
+     }
+     span{
+       color: #858687;
+       font-weight: 700;
+       margin-left: 5px;
+     }
+ }
+ }
+ .login-dark {
+   position: absolute;
+   right: 20px;
+   top: 20px;
+ }
+ 
+ .qrcode {
+   position: absolute;
+   right: 0;
+   top: 0;
+   cursor: pointer;
+   width: 30px;
+ }
+ .login-qrcode {
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+   img {
+     width: 60%;
+   }
+   .title {
+   }
+ }
+ 
+ @media (max-width: 850px) {
+   .login-container {
+     padding: 10px;
+   }
+   .login-box {
+     .login-form {
+       width: 88%;
+       .title {
+         font-size: 20px;
+       }
+     }
+   }
+   .login-left {
+     display: none;
+   }
+ }
+ .service_tg{
+  display: flex;
+  font-size: 14px;
+  margin-top: 20px;
+  cursor: pointer;
+  color: #14ac8e;
+  align-items: center;
+    .icon_img{
+      display: flex;
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(131.49deg, rgb(0, 174, 232) 0%, rgb(0, 164, 209) 100%);
+      img{
+        width: 12px;
+        height: 12px;
+      }
+    }
+ }
+ .service_tg:hover{
+  color: #14ac8e;
+  text-decoration: underline;
+ }
+
+ ::v-deep .el-input__inner {
+  display: flex;
+  height: 50px;
+  line-height: 1;
+  border-radius: 30px;
+}
+::v-deep .el-radio__input.is-checked + .el-radio__label{
+  color: #14ac8e;
+}
+::v-deep .el-radio.is-bordered.is-checked{
+  border-color: #14ac8e;
+}
+::v-deep .el-radio__input.is-checked .el-radio__inner{
+  background: #14ac8e;
+  border-color: #14ac8e;
+}
+::v-deep .el-checkbox__input.is-checked .el-checkbox__inner{
+  background: #14ac8e;
+  border-color: #14ac8e;
+}
+.masker_cover{
+  width: 100%;
+  height: 100vh;
+  padding: 0 25%;
+  position: fixed;
+  z-index: 999;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: rgba(113,123,133,.7);
+  .masker_content{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    padding: 0 35px;
+    overflow-y: auto;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: #fff;
+    .el-icon-close{
+      position: absolute;
+      top: 30px;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+}
+.el-checkbox__label{
+  padding-left: 0;
+  display: flex;
+  a{
+    color: #0daa8b;
+  }
+}

@@ -1,0 +1,62 @@
+.source_main{
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 10px;
+    .source_l{
+        display: flex;
+        width: 190px;
+        flex-shrink: 0;
+        margin-right: 20px;
+        align-items: center;
+        justify-content: space-between;
+        .source_title{
+            max-width: 140px;
+            flex-shrink: 0;
+            white-space: nowrap; /* 不换行 */
+            overflow: hidden; /* 溢出部分隐藏 */
+            text-overflow: ellipsis; /* 显示省略号 */
+        }
+    }
+    .reply_main{
+        width: 900px;
+        padding: 5px 10px;
+        color: #606266;
+        font-size: 14px;
+        border-radius: 5px;
+        margin-right: 20px;
+        flex-shrink: 0;
+        border: 1px dashed #d6d6d6;
+        .content_warp{
+            display: flex;
+            margin-top: 5px;
+            .reply_content{
+                display: flex;
+                flex-wrap: wrap;
+                line-height: 1.5;
+                font-size: 14px;
+                margin-left: 10px;
+            }
+            img{
+                height: 70px;
+            }
+            audio{
+                height: 50px;
+            }
+            video{
+
+            }
+        }
+    }
+    .reply_fun{
+        width: 60px;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-between;
+        i{
+            font-size: 18px;
+            cursor: pointer;
+        }
+    }
+}
