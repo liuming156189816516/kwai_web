@@ -213,65 +213,6 @@ export const asyncRoutes = [
       },
     ]
   },
-  // 服务器管理
-  {
-    path: '/theServer',
-    component: Layout,
-    name: 'theServer',
-    meta: { title: '服务器管理', icon: 'el-icon-office-building' },
-    children: [
-      {
-        path: '/groupServer',
-        component: () => import('@/views/theServer/groupServer'),
-        name: 'groupServer',
-        meta: {
-          title: '站群服务器',
-        }
-      },
-      {
-        path: '/domainName',
-        component: () => import('@/views/theServer/domainName'),
-        name: 'domainName',
-        meta: {
-          title: '域名列表',
-        }
-      },
-      {
-        path: '/activationCode',
-        component: () => import('@/views/theServer/activationCode'),
-        name: 'activationCode',
-        meta: {
-          title: '活码列表',
-        }
-      },
-
-    ]
-  },
-  // 信用卡管理
-  {
-    path: '/creditCardManage',
-    component: Layout,
-    name: 'creditCardManage',
-    meta: { title: '信用卡管理', icon: 'el-icon-bank-card' },
-    children: [
-      {
-        path: '/creditCardUser',
-        component: () => import('@/views/creditCardManage/creditCardUser'),
-        name: 'creditCardUser',
-        meta: {
-          title: '信用卡账号',
-        }
-      },
-      {
-        path: '/creditCard',
-        component: () => import('@/views/creditCardManage/creditCard'),
-        name: 'creditCard',
-        meta: {
-          title: '信用卡列表',
-        }
-      },
-    ]
-  },
    // IP管理
   {
     path: '/ipList',
