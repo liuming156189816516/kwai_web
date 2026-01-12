@@ -54,12 +54,13 @@
               <span class="el-checkbox__label">
                 <span style="color: rgb(51, 51, 51);">我已阅读并同意</span>
                 <a href="javascript:;" @click="viewXieyi(0)">《用户协议》</a>
-                <a href="javascript:;" @click="viewXieyi(1)">《隐私政策》</a>
+                <a href="javascript:;" @click="viewXieyi(1)">《隐私政策》ces1</a>
+                <a href="javascript:;" >测试</a>
               </span>
             </el-checkbox>
             <div class="service_tg" @click="jumpServeTg" v-if="isServe">
               <span class="icon_img">
-                <img src="../../assets/tg_icon.png" alt="" srcset=""> 
+                <img src="../../assets/tg_icon.png" alt="" srcset="">
               </span>
               <span>
                 {{ $t('sys_l107') }}
