@@ -228,7 +228,7 @@
               {{ scope.row.device_id ? scope.row.device_id === '0' ? '-' : scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号状态" prop="status" widtminWidthh="100">
+          <u-table-column label="账号状态" prop="status" minWidth="130">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -632,7 +632,7 @@ export default {
       return ['', this.$t('sys_l067'), this.$t('sys_l068')]
     },
     accountOptions() {
-      return ['', this.$t('sys_g032'), this.$t('sys_g033'), this.$t('sys_g034'), this.$t('sys_g035'), this.$t('sys_g036')]
+      return ['', this.$t('sys_g032'), this.$t('sys_g033'), this.$t('sys_g034')]
     },
 
     moveRules() {
