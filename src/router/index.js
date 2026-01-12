@@ -117,31 +117,6 @@ export const asyncRoutes = [
       }
     ]
   },
-     // 素材管理
-  {
-    path: '/content',
-    component: Layout,
-    name: 'content',
-    meta: { title: i18n.t('sys_m045'), icon: 'el-icon-folder-opened' },
-    children: [
-      {
-        path: '/material',
-        component: () => import('@/views/content/material'),
-        name: 'material',
-        meta: {
-          title: '素材管理',
-        }
-      },
-      {
-        path: '/collect',
-        component: () => import('@/views/content/collect'),
-        name: 'collect',
-        meta: {
-          title: '素材采集',
-        }
-      },
-    ]
-  },
   // 权限配置
   {
     path: '/permission',

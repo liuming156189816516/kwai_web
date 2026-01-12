@@ -199,14 +199,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item prop="fuid">
-                  <div class="label_radius_title">选择用户</div>
-                  <el-select v-model="accountForm.fuid" clearable filterable placeholder="请选择用户" style="width:50%;">
-                    <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
                 <el-form-item>
                   <div class="label_radius_title">{{ $t('sys_c058') }}</div>
                   <div>{{ $t('sys_c114') }}</div>
@@ -421,7 +413,6 @@ export default {
         device_type: 1,
         export_type: '',
         protocol_type: 0,
-        fuid: ''
       },
       pageOption: resetPage(),
       randomNum: [1, 2, 4, 8, 3, 8, 4, 6, 3, 8],
@@ -452,7 +443,6 @@ export default {
     accountRules() {
       return {
         group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        fuid: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         export_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
       }
     },
@@ -469,7 +459,6 @@ export default {
         this.fail_number = 0;
         this.accountForm.remark = '';
         this.accountForm.group_id = '';
-        this.accountForm.fuid = '';
       }
     },
     exportModel(val) {
@@ -610,7 +599,6 @@ export default {
         success_list: this.success_list,
         remark: this.accountForm.remark,
         group_id: this.accountForm.group_id,
-        fuid: this.accountForm.fuid,
       }
       this.startPercent();
       this.fail_number = 0;
