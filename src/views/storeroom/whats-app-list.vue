@@ -222,13 +222,13 @@
               <el-avatar v-else icon="el-icon-user-solid"/>
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" width="100"/>
-          <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
+          <u-table-column label="账号" prop="account" minWidth="100"/>
+          <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip minWidth="120">
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id === '0' ? '-' : scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号状态" prop="status" width="100">
+          <u-table-column label="账号状态" prop="status" widtminWidthh="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -249,7 +249,7 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" prop="use_status"  width="100">
+          <u-table-column label="使用状态" prop="use_status"  minWidth="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -272,7 +272,7 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" prop="limit_err" show-overflow-tooltip width="180">
+          <u-table-column label="功能限制" prop="limit_err" show-overflow-tooltip minWidth="180">
             <template slot-scope="scope">
               <el-tag size="small" type="danger">
                 {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
@@ -292,12 +292,12 @@
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
+          <u-table-column label="入库时间" prop="itime" show-overflow-tooltip minWidth="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip width="150">
+          <u-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip minWidth="150">
             <template slot-scope="scope">
               {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
             </template>
@@ -362,19 +362,6 @@
                 :placeholder="$t('sys_mat021')"
                 :rows="6"
                 maxlength="50"
-                show-word-limit
-                size="small"
-                type="textarea"
-            />
-          </el-form-item>
-        </template>
-
-        <template v-if="batchOptionData.btnLabel === '分配设备ID' ">
-          <el-form-item label-width="0" prop="deviceIdText">
-            <el-input
-                v-model="batchOptionData.ipForm.deviceIdText"
-                :rows="6"
-                placeholder="请输入设备ID"
                 show-word-limit
                 size="small"
                 type="textarea"
@@ -676,7 +663,6 @@ export default {
         {icon: 'edit', label: '批量修改备注', index: 5, api: doupremark},
         {icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi},
         {icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi},
-        {icon: 's-tools', label: '分配设备ID', index: 13, api: setassigndeviceidApi},
       ]
     },
   },
@@ -794,9 +780,9 @@ export default {
       if (this.checkIdArray.length === 0) {
         return successTips(this, 'error', this.$t('sys_c126'));
       }
-      this.batchOptionData.title = command.item.label === '分配设备ID' ? '设备ID' : command.item.label;
+      this.batchOptionData.title = command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
-      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' || command.item.label === '分配设备ID') {
+      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' ) {
         this.batchOptionData.show = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
@@ -876,8 +862,6 @@ export default {
             params.group_id = this.batchOptionData.ipForm.group_id // 移动分组
           } else if (this.batchOptionData.btnLabel === '批量修改备注') {
             params.remark = this.batchOptionData.ipForm.remock_text // 修改备注
-          } else if (this.batchOptionData.btnLabel === '分配设备ID') {
-            params.deviceIdText = this.batchOptionData.ipForm.deviceIdText // 分配设备ID
           }
           let reqApi;
           this.isLoading = true;
@@ -1577,20 +1561,20 @@ export default {
 }
 
 .queryForm {
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+  //&:after {
+  //  content: "";
+  //  display: table;
+  //  clear: both;
+  //}
 
-  ::v-deep .el-form-item {
-    float: left;
-  }
+  //::v-deep .el-form-item {
+  //  float: left;
+  //}
 
-  ::v-deep .el-form-item:last-of-type {
-    float: right;
-    //clear: both; /* 清除左右两边的浮动 */
-  }
+  //::v-deep .el-form-item:last-of-type {
+  //  float: right;
+  //  //clear: both; /* 清除左右两边的浮动 */
+  //}
 
 }
 </style>

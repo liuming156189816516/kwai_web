@@ -6,16 +6,10 @@
     <div class="right-menu">
       <div class="serveic_img" @click="jumpServeTg" v-if="isServe">
         <span class="icon_img">
-          <img src="../../assets/tg_icon.png" alt="" srcset=""> 
+          <img src="../../assets/tg_icon.png" alt="" srcset="">
         </span>
         <span>
           {{ $t('sys_l107') }}
-        </span>
-      </div>
-      <div class="sys_use_time">
-        {{ $t('sys_l019') }}：
-        <span :class="{'expire_tips':expireTime}">
-          {{ userInfo.valid_time > 0 ? $baseFun.resetTime(userInfo.valid_time * 1000) : 0 }}
         </span>
       </div>
       <!-- <template v-if="device!=='mobile'"> -->
