@@ -96,7 +96,7 @@
 
         <el-table-column label="上报数据" min-width="120" prop="data" show-overflow-tooltip>
           <template slot-scope="scope">
-            <spana class="dataText">{{ scope.row[scope.column.property] }}</spana>
+            <spana class="dataText" @click="openConfigModal">{{ scope.row[scope.column.property] }}</spana>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
