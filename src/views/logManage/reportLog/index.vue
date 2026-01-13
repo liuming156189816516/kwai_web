@@ -94,9 +94,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="上报数据" min-width="120" prop="data" show-overflow-tooltip>
+        <el-table-column label="上报数据" min-width="120" prop="data">
           <template slot-scope="scope">
-            <spana class="dataText" @click="openConfigModal">{{ scope.row[scope.column.property] }}</spana>
+            <el-tooltip class="item" effect="dark" :content="scope.row[scope.column.property]" placement="top">
+              <span class="dataText" @click="openConfigModal">{{ scope.row[scope.column.property]?scope.row[scope.column.property].slice(0, 30):'' }}</span>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
