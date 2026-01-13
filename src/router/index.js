@@ -79,7 +79,7 @@ export const asyncRoutes = [
     path: '/storeroom',
     component: Layout,
     name: 'storeroom',
-    meta: { title: i18n.t('sys_m017'), icon: 'el-icon-user' },
+    meta: { title: '账号管理', icon: 'el-icon-user' },
     children: [
       {
         path: '/warehouse',
@@ -99,6 +99,24 @@ export const asyncRoutes = [
       },
     ]
   },
+  // 日志管理
+  {
+    path: '/logManage',
+    component: Layout,
+    name: 'logManage',
+    meta: { title: '日志管理', icon: 'el-icon-user' },
+    children: [
+      {
+        path: '/reportLog',
+        component: () => import('@/views/logManage/reportLog'),
+        name: 'reportLog',
+        meta: {
+          title: '上报日志',
+        }
+      },
+    ]
+  },
+
    // IP管理
   {
     path: '/ipList',
@@ -113,6 +131,23 @@ export const asyncRoutes = [
         name: 'ipManage',
         meta: {
           title: i18n.t('sys_m044'),
+        }
+      }
+    ]
+  },
+  // 数据管理
+  {
+    path: '/dataManage',
+    component: Layout,
+    name: 'data',
+    meta: { title: '数据管理',icon: 'el-icon-s-data' },
+    children: [
+      {
+        path: '/dataPage',
+        component: () => import('@/views/dataManage/dataPage'),
+        name: 'dataPage',
+        meta: {
+          title: '数据管理',
         }
       }
     ]
