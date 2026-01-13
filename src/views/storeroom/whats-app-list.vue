@@ -29,22 +29,7 @@
 
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-dropdown trigger="click" @command="(command)=>{onlineHandle(command)}">
-          <el-button type="primary"> 批量上线
-            <i class="el-icon-arrow-down el-icon--right" />
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              v-for="(item, idx) in onlineOption"
-              :id="idx"
-              :key="idx"
-              :command="{item,idx}"
-              :disabled="idx==0||checkIdArray.length==0"
-            >
-              {{ item.label }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-button type="primary" :disabled="idx===0||checkIdArray.length===0" @click="batchLaunch"> 批量上线 </el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
@@ -423,7 +408,6 @@ import {
   sortgroup,
   dobatchaccountdetailApi,
   dobatchlogin,
-  dobatchfastlogin,
   updateaccountavailabilityApi,
   setaccountunavailableApi,
 } from '@/api/storeroom'
@@ -442,7 +426,7 @@ export default {
         status: '',
         use_status: -1,
         group_name: '',
-        account_id:'',
+        account_id: '',
         device_id: '',
         limit_err: [],
         sort: '',
@@ -646,14 +630,6 @@ export default {
         content: [{ required: true, message: this.$t('sys_mat020'), trigger: 'blur' }],
       }
     },
-    // 批量上线
-    onlineOption() {
-      return [
-        { label: '---默认通道---', index: 0, api: null },
-        { label: '批量上线', index: 0, api: dobatchlogin },
-        { label: '批量快速上线', index: 0, api: dobatchfastlogin },
-      ]
-    },
     // 批量操作
     batchOption() {
       return [
@@ -793,12 +769,35 @@ export default {
       }
     },
     // 批量上线
-    onlineHandle(command) {
-      this.batchOptionData.ipForm.ip_id = '';
-      if (command.item.api) {
-        this.batchOptionData.title = command.item.label
-        this.popConfirm(command);
-      }
+    batchLaunch() {
+      const that = this;
+      that.$confirm(`确认批量上线吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: function(action, instance, done) {
+          if (action === 'confirm') {
+            const params = {
+              accounts: that.checkAccount
+            }
+            instance.confirmButtonLoading = true;
+
+            dobatchlogin(params).then(res => {
+              instance.confirmButtonLoading = false;
+              if (res.code !== 0) return;
+              that.initNumberList();
+              that.$refs.serveTable.clearSelection();
+              successTips(that)
+              done();
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        that.$message({ type: 'info', message: that.$t('sys_c048') });
+      })
     },
     // 批量操作 确认框
     popConfirm(command) {

@@ -18,7 +18,7 @@
       </el-form-item>
     </el-form>
     <!--  工具栏 -->
-    <el-form v-if="false" :inline="true" size="small">
+    <el-form :inline="true" size="small">
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
@@ -47,7 +47,6 @@
         style="width: 100%;"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
-        @sort-change="handleSortChange"
       >
 
         <el-table-column :selectable="selectable" type="selection" width="55" />
@@ -97,7 +96,7 @@
 
         <el-table-column label="上报数据" min-width="120" prop="data" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            <spana class="dataText">{{ scope.row[scope.column.property] }}</spana>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -123,17 +122,33 @@
 
     </div>
 
+    <!-- JSON 配置 -->
+    <el-dialog
+      :title="configData.title"
+      center
+      :visible.sync="configData.show"
+      :close-on-click-modal="false"
+      width="80%"
+      @close="closeConfigModal"
+    >
+      <div style="height: 75vh">
+        <jsonEditorTool ref="refJsonEditorToo" v-model="configData.value" :show-footer="false" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getDataApi,delDataApi } from './api';
-import { resetPage, successTips, getLabelByVal } from '@/utils';
+import { resetPage, successTips, getLabelByVal,deepClone } from '@/utils';
 import { formatTimestamp } from '@/filters'
+import jsonEditorTool from '@/components/jsonEditorTool'
 
 export default {
   name: 'ReportLog',
-  components: { },
+  components: {
+    jsonEditorTool
+  },
   data() {
     return {
       queryData: {
@@ -166,6 +181,12 @@ export default {
           label: '批量删除'
         },
       ],
+      configData: {
+        title: '上报数据',
+        show: false,
+        formData: {},
+        value: null
+      },
     }
   },
   mounted() {
@@ -205,31 +226,33 @@ export default {
         }
       })
     },
+
+    // 打开配置
+    openConfigModal(row,kay) {
+      this.configData.show = true
+      this.configData.kay = kay
+      this.configData.formData = deepClone(row)
+      if (row[kay]) {
+        this.configData.value = JSON.parse(row[kay])
+      }
+    },
+
+    // 关闭配置
+    closeConfigModal() {
+      this.configData.show = false
+      this.configData.formData = {}
+      this.configData.value = null
+      this.$refs.refJsonEditorToo.closeClearFun()
+    },
     // 对数据 禁用选择
     selectable(row, index) {
       return true// row.status === '4'
-    },
-    // 新建
-    addOpenFun(type) { },
-    // 关闭新建
-    closeModal() {
-
-    },
-    // 新建保存
-    addSubmit() {
-      /*
-      this.$refs.refAddModal.validate((v) => {
-        if (v) {
-        }
-      })
-      */
     },
     // 批量操作
     handleCommand(command) {
       if (!this.selectIdData.length) {
         return successTips(this, 'error', '请勾选要操作的列表');
       }
-      this.setBatchData.type = command.idx
       if (command.item.label === '批量删除') {
         this.delDataFun()
       }
@@ -270,47 +293,10 @@ export default {
         return item.id
       })
     },
-    // 筛选项
-    handleSortChange({ column, prop, order }) {
-      console.log('order',order)
-      if (order === 'descending') { // 下降 倒序
-        switch (prop) {
-          case 'consumption_num': // 消耗量
-            this.queryData.sort = '-' + prop
-            break;
-          case 'exposure_num': // 曝光量
-            this.queryData.sort = '-' + prop
-            break;
-          case 'click_num': // 点击量
-            this.queryData.sort = '-' + prop
-            break;
-          case 'watch_rate': // 完播率
-            this.queryData.sort = '-' + prop
-            break;
-        }
-      } else if (order === 'ascending') { // 上升 = 正序
-        switch (prop) {
-          case 'consumption_num': // 消耗量
-            this.queryData.sort = prop
-            break;
-          case 'exposure_num': // 曝光量
-            this.queryData.sort = prop
-            break;
-          case 'click_num': // 点击量
-            this.queryData.sort = prop
-            break;
-          case 'watch_rate': // 完播率
-            this.queryData.sort = prop
-            break;
-        }
-      } else {
-        this.queryData.sort = ''
-      }
-      this.getDataListFun()
-    },
+
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 240;
+      this.cliHeight = document.documentElement.clientHeight - 280;
     },
     // 单行点击
     rowSelectChange(row) {
@@ -320,7 +306,6 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.selectIdData',this.selectIdData)
     },
     // 行内筛选项
     handleRowQuery(val, key, type) {
@@ -369,24 +354,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.addModalName {
-  ::v-deep .el-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-
-  }
-
-  ::v-deep .el-form-item {
-    width: 48%;
-  }
-}
-
-.file_content {
+.dataText {
   cursor: pointer;
-  color: #0a76a4;
+  color: #1890ff;
   text-decoration: underline;
-  font-size: 25px;
 }
 </style>
