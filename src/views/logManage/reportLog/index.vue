@@ -97,7 +97,7 @@
         <el-table-column label="上报数据" min-width="120" prop="data">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="scope.row[scope.column.property]" placement="top">
-              <span class="dataText" @click="openConfigModal">{{ scope.row[scope.column.property]?scope.row[scope.column.property].slice(0, 30):'' }}</span>
+              <span class="dataText" @click="openConfigModal(scope.row,'data')">{{ scope.row[scope.column.property]?scope.row[scope.column.property].slice(0, 30):'' }}</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -231,6 +231,8 @@ export default {
 
     // 打开配置
     openConfigModal(row,kay) {
+      console.log('row',row)
+      console.log('kay',kay)
       this.configData.show = true
       this.configData.kay = kay
       this.configData.formData = deepClone(row)
