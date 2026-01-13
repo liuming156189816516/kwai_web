@@ -104,7 +104,7 @@ export const asyncRoutes = [
     path: '/logManage',
     component: Layout,
     name: 'logManage',
-    meta: { title: '日志管理', icon: 'el-icon-user' },
+    meta: { title: '日志管理', icon: 'el-icon-s-data' },
     children: [
       {
         path: '/reportLog',

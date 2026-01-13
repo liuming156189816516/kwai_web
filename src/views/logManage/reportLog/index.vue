@@ -7,7 +7,7 @@
         <el-input v-model="queryData.req_id" clearable placeholder="请输入请求ID" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.kw_account" clearable placeholder="请输入快手账号" @input="changeInput" />
+        <el-input v-model="queryData.kw_account" clearable placeholder="请输入账号" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-input v-model="queryData.account_id" clearable placeholder="请输入账号ID" @input="changeInput" />
@@ -78,7 +78,7 @@
             {{ getLabelByVal(scope.row[scope.column.property], pTypeList) || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="快手账号" min-width="120" prop="kw_account" show-overflow-tooltip>
+        <el-table-column label="账号" min-width="120" prop="kw_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
