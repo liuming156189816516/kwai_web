@@ -163,6 +163,7 @@
                     :cell-style="{ textAlign: 'center' }"
                     :data="formData.material_list"
                     :header-cell-style="{ color: '#909399', textAlign: 'center' }"
+                    max-height="300"
                     style="width: 100%"
                   >
                     <el-table-column label="序号" type="index" width="60" />
@@ -173,10 +174,10 @@
                     </el-table-column>
                     <el-table-column label="操作" prop="action" width="120">
                       <template slot-scope="scope">
-                        <el-button class="custom_btn" size="mini" @click="editContentFun(scope.row,scope.index)">
+                        <el-button class="custom_btn" size="mini" @click="editContentFun(scope.row,scope.$index)">
                           <i class="el-icon-edit" />
                         </el-button>
-                        <el-button class="custom_btn" size="mini" @click="delContentFun(scope)">
+                        <el-button class="custom_btn" size="mini" @click="delContentFun(scope.row,scope.$index)">
                           <i class="el-icon-delete-solid" />
                         </el-button>
                       </template>
