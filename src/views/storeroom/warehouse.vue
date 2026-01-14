@@ -363,7 +363,7 @@ import {
   dooutputaccountlog,
   dobathdelaccountfile
 } from '@/api/storeroom'
-import { resetTime } from '../../utils'
+import { resetTime } from '@/utils'
 import { adminuser } from '@/api/permission.js'
 
 export default {

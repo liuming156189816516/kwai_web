@@ -99,6 +99,23 @@ export const asyncRoutes = [
       },
     ]
   },
+  // 营销管理
+  {
+    path: '/marketing',
+    component: Layout,
+    name: 'marketing',
+    meta: { title: '营销管理', icon: 'el-icon-user' },
+    children: [
+      {
+        path: '/sendPrivatelyTask',
+        component: () => import('@/views/marketing/sendPrivatelyTask'),
+        name: 'sendPrivatelyTask',
+        meta: {
+          title: '私发任务',
+        }
+      },
+    ]
+  },
   // 日志管理
   {
     path: '/logManage',
