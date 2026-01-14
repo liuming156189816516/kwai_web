@@ -274,7 +274,8 @@ export default {
         type: '',
         formData: {
           content: ''
-        }
+        },
+        tableIndex: null,
       }
     }
   },
@@ -302,41 +303,42 @@ export default {
       this.rhetoricModal.show = true
     },
     // 编辑 话术弹窗
-    editContentFun(row,index) {
-      // this.rhetoricModal.show = true
-      // this.rhetoricModal.type = 'edit'
-      // this.rhetoricModal.formData = deepClone(row)
-      console.log('row',row)
-      console.log('index',index)
+    editContentFun(form,index) {
+      this.rhetoricModal.show = true
+      this.rhetoricModal.type = 'edit'
+      this.rhetoricModal.formData = deepClone(form)
+      this.rhetoricModal.tableIndex = index
     },
     // 删除 话术
-    delContentFun(form) {
-      this.formData.material_list.splice(form._index,1)
+    delContentFun(form,index) {
+      this.formData.material_list.splice(index,1)
     },
-    // 提交
+    // 提交 话术
     submitRhetoricModal() {
       if (!this.rhetoricModal.formData.content) {
         this.$message.warning('请输入内容')
         return false
       }
         console.log('this.rhetoricModal.formData',this.rhetoricModal.formData)
-        const type = this.rhetoricModal.type
+      const type = this.rhetoricModal.type
+      const index = this.rhetoricModal.tableIndex
         const formData = deepClone(this.rhetoricModal.formData)
         if (type === 'add') {
           this.formData.material_list.push(formData)
         } else if (type === 'edit') {
-          this.formData.material_list[formData._index] = formData
+          this.formData.material_list[index].content = formData.content
         }
       console.log('this.formData.material_list',this.formData.material_list)
-     // setTimeout(() => {
-     //   this.closeRhetoricModal()
-     // },200)
+     setTimeout(() => {
+       this.closeRhetoricModal()
+     },150)
     },
     // 关闭 话术弹窗
     closeRhetoricModal() {
       this.rhetoricModal.show = false
       this.rhetoricModal.type = ''
       this.rhetoricModal.formData.content = ''
+      this.rhetoricModal.tableIndex = null
     },
     // 提交
     submitForm(formName) {
