@@ -104,7 +104,7 @@ export const asyncRoutes = [
     path: '/marketing',
     component: Layout,
     name: 'marketing',
-    meta: { title: '营销管理', icon: 'el-icon-data' },
+    meta: { title: '营销管理', icon: 'el-icon-s-data' },
     children: [
       {
         path: '/sendPrivatelyTask',
