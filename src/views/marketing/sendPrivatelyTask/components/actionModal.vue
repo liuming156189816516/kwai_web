@@ -11,10 +11,9 @@
     >
       <div :style="{'max-height':modalHeight+300+'px'}" class="content">
         <el-form
-          ref="formData"
+          ref="refFormData"
           :model="formData"
           :rules="formRules"
-          class="demo-ruleForm"
           label-width="20%"
           size="small"
         >
@@ -22,8 +21,8 @@
           <el-divider />
           <el-row :gutter="20">
             <el-col :span="22">
-              <el-form-item label="任务名称：" prop="task_name">
-                <el-input v-model="formData.name" maxlength="20" show-word-limit @input="changeInput" />
+              <el-form-item label="任务名称：" prop="name">
+                <el-input v-model="formData.name" placeholder="请输入" maxlength="20" show-word-limit @input="changeInput" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -37,16 +36,15 @@
                   <el-form-item label="选择分组：" label-width="100px" prop="group_id" style="margin-right: 20px;">
                     <el-select
                       v-model="formData.group_id"
-                      :placeholder="$t('sys_c052')"
+                      placeholder="请选择"
                       collapse-tags
-                      multiple
                       style="margin-left: 20px;"
                       @change="changeAccountNum"
                     >
                       <el-option
                         v-for="item in accountGroupList"
                         :key="item.id"
-                        :label="item.name+'(数量：'+item.count+'，在线：'+item.online_num+')'"
+                        :label="item.name+'(数量：'+item.count+'，可用：'+item.online_num+')'"
                         :value="item.group_id"
                       />
                     </el-select>
@@ -60,17 +58,9 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="22">
-              <el-form-item label="选择数据：" prop="ws_data">
-                <el-radio-group v-model="formData.ws_data">
-                  <el-radio :label="1">粉丝数据</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="22">
-              <el-form-item prop="data_pack_id">
-                <el-select v-model="formData.data_pack_id" :placeholder="$t('sys_c052')">
+              <el-form-item label="选择数据：" prop="data_pack_id">
+                <el-radio :value="1" :label="1">粉丝数据</el-radio>
+                <el-select v-model="formData.data_pack_id" placeholder="请选择" style="margin-top: 10px">
                   <el-option
                     v-for="item in datapackList"
                     :key="item.id"
@@ -142,6 +132,25 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row v-if="formData.send_type===3" :gutter="20">
+            <el-col :span="22">
+              <el-form-item>
+                <div class="number_01">
+                  <span class="number_02">转换数量：</span>
+                  <span class="number_03">
+                    <el-input-number
+                      v-model="formData.replace_num"
+                      :min="1"
+                      label="转换数量"
+                      style="width: 120px;"
+                      type="number"
+                    />
+                  </span>
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <h3 class="contTitle">话术设置</h3>
           <el-divider />
           <el-row :gutter="20">
@@ -189,7 +198,7 @@
           </el-row>
 
           <el-form-item>
-            <el-button :loading="isLoading" type="primary" @click="submitForm('formData')">开始群发</el-button>
+            <el-button :loading="modal.loading" :disabled="modal.loading" type="primary" @click="submitForm('refFormData')">开始群发</el-button>
             <el-button @click="$router.go(-1)">取消</el-button>
           </el-form-item>
         </el-form>
@@ -228,7 +237,8 @@
 
 <script>
 import { deepClone } from '@/utils';
-
+import { getUserListApi } from '../api';
+import { getdatapacklist } from '@/api/datamanage'
 export default {
   name: 'ActionModal',
   props: {
@@ -245,30 +255,26 @@ export default {
       },
       formData: {
         name: '',
-        group_id: '',
-        data_pack_id: 1,
-        send_type: '',
+        group_id: [],
+        data_pack_id: '',
+        send_type: 1,
         send_num: 115,
         min_time: 10,
         max_time: 15,
         material_list: [],
-        ws_data: 1
+        replace_num: 5,
       },
       totalNum: 0,
       formRules: {
-        task_name: [{ required: true, message: '请选择', trigger: 'blur' }],
-        source_num: [{ required: true, message: '请选择', trigger: 'change' }],
-        group_id: [{ type: 'array', required: true, message: '请选择', trigger: 'change' }],
-        ws_data: [{ required: true, message: '请选择', trigger: 'change' }],
-        end_time: [{ required: true, message: '请选择', trigger: 'change' }],
-        group_type: [{ required: true, message: '请选择', trigger: 'change' }],
-        group_say: [{ required: true, message: '请选择', trigger: 'change' }],
+        name: [{ required: true, message: '请选择', trigger: 'blur' }],
+        group_id: [{ required: true, message: '请选择', trigger: 'change' }],
         data_pack_id: [{ required: true, message: '请选择', trigger: 'change' }],
-        material_list: [{ required: true, message: '请添加话术', trigger: 'change' }]
+        material_list: [{ required: true, message: '请添加话术', trigger: 'change' }],
+        send_type: [{ required: true, message: '请选择', trigger: 'change' }],
       },
       btnOption: ['添加素材'],
       accountGroupList: [], // 账号分组
-      datapackList: [], // 数据包
+      datapackList: [], // 选择数据
       rhetoricModal: {
         show: false,
         type: '',
@@ -279,23 +285,50 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getUserListFun()
+    this.getDataPackListFun()
+  },
   methods: {
     open(form, type) {
       this.modal.type = type
       this.modal.show = true
-      if (form) {
-        console.log('form', form)
-      }
+      this.$nextTick(() => {
+        if (form) {
+          console.log('form', form)
+        }
+        this.$refs['refFormData'].resetFields()
+      })
     },
     // 重置
-    resetGroupIdFun() {},
+    resetGroupIdFun() {
+      this.formData.group_id = ''
+      this.$nextTick(() => {
+        this.$refs['refFormData'].clearValidate('group_id');
+      })
+    },
     // 选择账号分组
-    changeAccountNum() {},
+    changeAccountNum() {
+      const numbers = this.accountGroupList.filter(item => { return item.group_id === this.formData.group_id });
+      this.totalNum = numbers.reduce((sum, item) => sum + Number(item.online_num || 0), 0);
+    },
     // 关闭弹窗
     closeModal() {
-      this.modal.show = true
+      this.modal.show = false
       this.modal.loading = false
       this.modal.type = ''
+      this.$refs['refFormData'].resetFields()
+      this.formData = {
+        name: '',
+        group_id: [],
+        data_pack_id: '',
+        send_type: 1,
+        send_num: 115,
+        min_time: 10,
+        max_time: 15,
+        material_list: [],
+        replace_num: 6,
+      }
     },
     // 打开 话术弹窗
     openRhetoricModal(form, index) {
@@ -328,7 +361,6 @@ export default {
         } else if (type === 'edit') {
           this.formData.material_list[index].content = formData.content
         }
-      console.log('this.formData.material_list',this.formData.material_list)
      setTimeout(() => {
        this.closeRhetoricModal()
      },150)
@@ -342,15 +374,44 @@ export default {
     },
     // 提交
     submitForm(formName) {
+      this.modal.loading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.modal.loading = false
-          console.log('111提交')
+          if (this.formData.send_type !== 3) {
+            delete this.formData.replace_num
+          }
+          const data = {
+            type: this.modal.type,
+            formData: this.formData
+          }
+          data.formData.material_list = this.formData.material_list.map(item => { return item.content })
+          this.$emit('saveData',data)
         } else {
           console.log('error submit!!');
           return false;
         }
       });
+    },
+    // 选择账号
+    getUserListFun() {
+      getUserListApi({}).then(res => {
+        if (res.msg === 'success') {
+          this.accountGroupList = res.data.list
+        }
+      })
+    },
+    // 选择数据
+    getDataPackListFun() {
+      const params = {
+        page: 1,
+        limit: 1000,
+      }
+      getdatapacklist(params).then(res => {
+        if (res.msg === 'success') {
+          this.datapackList = res.data.list
+        }
+      })
     },
     // 处理打开输入框无法输入问题
     changeInput() {

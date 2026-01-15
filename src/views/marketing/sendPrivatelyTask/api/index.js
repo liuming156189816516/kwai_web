@@ -19,7 +19,7 @@ export const getDetailListApi = (params) => {
 }
 
 // 新建
-export const addEditDataApi = (params) => {
+export const addDataApi = (params) => {
     return request({
         url: '/sendmsg/addsendmsgtask',
         method: 'post',

@@ -4,21 +4,21 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" class="queryForm" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="model1.account" clearable placeholder="请输入账号" />
+        <el-input v-model="queryData.account" clearable placeholder="请输入账号" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.account_id" clearable placeholder="请输入账号ID" />
+        <el-input v-model="queryData.account_id" clearable placeholder="请输入账号ID" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID" />
+        <el-input v-model="queryData.device_id" clearable placeholder="请输入设备ID" />
       </el-form-item>
       <el-form-item>
-        <el-select v-model="model1.limit_err" clearable filterable multiple placeholder="请选择功能限制">
+        <el-select v-model="queryData.limit_err" clearable filterable multiple placeholder="请选择功能限制">
           <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.reason" clearable placeholder="请输入原因" />
+        <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
@@ -57,7 +57,7 @@
             <el-popover v-model="search_icon" placement="top" width="230">
               <p>
                 <el-select
-                  v-model="model1.group_name"
+                  v-model="queryData.group_name"
                   :placeholder="$t('sys_c053')"
                   clearable
                   filterable
@@ -107,7 +107,7 @@
                 <div
                   v-for="(item, idx) in numberGroupList"
                   :key="idx"
-                  :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"
+                  :class="['group_item', queryData.group_id === item.id ? 'group_active' : '']"
                   :draggable="true"
                   @click="changeGroup(item, idx)"
                   @dragstart="dragStart(idx)"
@@ -116,7 +116,7 @@
                 >
                   <div class="group_name">
                     <i
-                      :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
+                      :class="['left_icon', queryData.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
                       class="left_icon"
                     />
                     <span class="group_text">{{ item.name }}</span>
@@ -224,14 +224,14 @@
           <u-table-column label="账号状态" prop="status" min-width="130">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
-                <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
+                <span :class="[queryData.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
                     v-for="(item,idx) in accountOptions"
                     :key="idx"
-                    :class="{'dropdown_selected':idx==model1.status}"
+                    :class="{'dropdown_selected':idx==queryData.status}"
                     :command="idx"
                   >{{ item == '' ? $t('sys_l053') : item }}
                   </el-dropdown-item>
@@ -245,14 +245,14 @@
           <u-table-column label="使用状态" prop="use_status" min-width="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
-                <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
+                <span :class="[queryData.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
                     v-for="(item,index) in statusList"
                     :key="index"
-                    :class="{'dropdown_selected':item.value==model1.use_status}"
+                    :class="{'dropdown_selected':item.value==queryData.use_status}"
                     :command="item.value"
                   >{{ item.label }}
                   </el-dropdown-item>
@@ -299,10 +299,10 @@
 
         <div class="layui_page">
           <el-pagination
-            :current-page.sync="model1.page"
-            :page-size="model1.limit"
+            :current-page.sync="queryData.page"
+            :page-size="queryData.limit"
             :page-sizes="pageOption"
-            :total="model1.total"
+            :total="queryData.total"
             background
             layout="total, sizes, prev, pager, next, jumper"
             @size-change="homelHandleSize"
@@ -415,7 +415,7 @@ import {
 export default {
   data() {
     return {
-      model1: {
+      queryData: {
         page: 1,
         limit: 100,
         total: 0,
@@ -683,7 +683,7 @@ export default {
     // 获取分组列表数据
     async initNumberGroup() {
       this.loadingGroup = true;
-      const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
+      const { data } = await getaccountgrouplist({ name: this.queryData.group_name, page: 1, limit: 100 });
       console.log('data', data)
       this.search_icon = false;
       this.loadingGroup = false;
@@ -693,27 +693,27 @@ export default {
     // 主数据
     initNumberList(num) {
       this.loading = true;
-      this.model1.page = num || this.model1.page;
-      const limitErr = this.model1.limit_err.map(item => {
+      this.queryData.page = num || this.queryData.page;
+      const limitErr = this.queryData.limit_err.map(item => {
         return item * 1
       })
       const params = {
-        page: this.model1.page,
-        limit: this.model1.limit,
-        account: this.model1.account, // 账号
-        sort: this.model1.sort, // 排序
-        status: this.model1.status || -1,
-        use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
-        device_id: this.model1.device_id,
-        account_id: this.model1.account_id,
+        page: this.queryData.page,
+        limit: this.queryData.limit,
+        account: this.queryData.account, // 账号
+        sort: this.queryData.sort, // 排序
+        status: this.queryData.status || -1,
+        use_status: this.queryData.use_status === 0 ? 0 : this.queryData.use_status || -1,
+        device_id: this.queryData.device_id,
+        account_id: this.queryData.account_id,
         limit_err: limitErr,
-        group_id: this.model1.group_id, // 分组
-        reason: this.model1.reason,
+        group_id: this.queryData.group_id, // 分组
+        reason: this.queryData.reason,
       }
 
       getaccountinfolist(params).then(res => {
         this.loading = false;
-        this.model1.total = res.data.total;
+        this.queryData.total = res.data.total;
 
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
@@ -734,17 +734,26 @@ export default {
     },
     // 重置 列表
     restQueryBtn() {
-      this.model1.account = '';
-      this.model1.credit_card_number = '';
-      this.model1.device_id = '';
-      this.model1.group_id = '';
+      this.queryData ={
+        page: 1,
+        limit: 100,
+        total: 0,
+        account: '',
+        group_id: '',
+        custom_popover: '960px',
+        select_sort: 'account',
+        status: '',
+        use_status: -1,
+        group_name: '',
+        account_id: '',
+        device_id: '',
+        limit_err: [],
+        sort: '',
+        reason: '',
+      }
       this.checkIdArray = [];
       this.checkAccount = [];
       this.selectArray = []
-      this.model1.select_sort = 'account';
-      this.model1.sort = ''
-      this.model1.limit_err = []
-      this.model1.reason = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -889,12 +898,12 @@ export default {
     },
     // 分页 切换
     homelHandleSize(val) {
-      this.model1.limit = val;
+      this.queryData.limit = val;
       this.initNumberList();
     },
     // 页码
     homeHandleCurrent(val) {
-      this.model1.page = val;
+      this.queryData.page = val;
       this.initNumberList();
     },
     // 筛选项 排序
@@ -922,9 +931,9 @@ export default {
     // 表格 赋值
     handleNewWork(row, idx) {
       if (idx === 1) {
-        this.model1.status = row;
+        this.queryData.status = row;
       } else if (idx === 2) {
-        this.model1.use_status = Number(row);
+        this.queryData.use_status = Number(row);
       }
       this.initNumberList();
     },
@@ -979,7 +988,7 @@ export default {
       this.batchArry = [];
       this.checkedNum = 0;
       this.groupIdx = idx;
-      this.model1.group_id = idx === 'clear' ? '' : row.id;
+      this.queryData.group_id = idx === 'clear' ? '' : row.id;
       if (idx === 'clear') {
         this.initNumberGroup()
       }

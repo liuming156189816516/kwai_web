@@ -63,9 +63,7 @@
         </el-table-column>
         <el-table-column label="发送模式" min-width="100" prop="send_type">
           <template slot-scope="scope">
-            <el-tag :type="getLabelByVal(scope.row[scope.column.property], sendTypeList)" size="small">
-              {{ getLabelByVal(scope.row[scope.column.property], sendTypeList) || '-' }}
-            </el-tag>
+            {{ getLabelByVal(scope.row[scope.column.property], sendTypeList) || '-' }}
           </template>
         </el-table-column>
         <el-table-column label="账号总数" min-width="80" prop="account_num" />
@@ -109,9 +107,7 @@
           </template>
           -->
           <template slot-scope="scope">
-            <el-tag :type="getLabelByVal(scope.row[scope.column.property], statusList,{label:'type',value:'value'})" size="small">
-              {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
-            </el-tag>
+            {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
           </template>
         </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
@@ -119,12 +115,12 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="配置" min-width="100" prop="conf_str">
+        <el-table-column label="配置" min-width="150" prop="conf_str" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        <el-table-column label="创建时间" min-width="150" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
@@ -157,13 +153,13 @@
     </div>
 
     <!-- 新建 -->
-    <actionModal ref="refActionModal" :modal-height:="cliHeight" />
+    <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" />
   </div>
 </template>
 
 <script>
 import {
-  getDataApi, batchDelDataApi, batchCloseDataApi,
+  getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp } from '@/filters'
@@ -262,10 +258,27 @@ export default {
         }
       })
     },
+
     // 新建
     addOpenFun() {
       this.$refs.refActionModal.open(null,'add')
-
+    },
+    // 保存
+    saveData(data) {
+      console.log('saveData',data)
+      if (data.type === 'add') {
+        this.addDataFun(data.formData)
+      }
+    },
+    // 新建
+    addDataFun(form) {
+      addDataApi(form).then(res => {
+        if (res.msg === 'success') {
+          this.$message.success('新建成功！')
+          this.$refs.refActionModal.closeModal()
+          this.getDataListFun(1)
+        }
+      })
     },
     // 详情
     openDetailListFun(row, title) {
