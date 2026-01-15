@@ -8,15 +8,10 @@
           <el-input v-model="queryData.name" clearable placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-select v-model="queryData.status" clearable filterable placeholder="请输入任务状态" style="width:100%;">
-            <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">查询</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">重置</el-button>
-          <el-button type="primary" :disabled="!selectIdData.length" @click="delDataFun">批量关闭</el-button>
-          <el-button type="primary" :disabled="!selectIdData.length" @click="batchCloseDataFun">批量删除</el-button>
+          <el-button type="primary" :disabled="!selectIdData.length" @click="batchCloseDataFun">批量关闭</el-button>
+          <el-button type="primary" :disabled="!selectIdData.length" @click="delDataFun">批量删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -46,9 +41,9 @@
 
         <el-table-column type="selection" width="55" />
         <el-table-column label="序号" type="index" width="60" />
-        <el-table-column label="任务名称" min-width="120" prop="task_name">
+        <el-table-column label="任务名称" min-width="120" prop="name">
           <template slot-scope="scope">
-            {{ scope.row.task_name ? scope.row.task_name : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
         <el-table-column label="账号分组" min-width="120" prop="group_name">
@@ -69,26 +64,26 @@
         <el-table-column label="账号总数" min-width="80" prop="account_num" />
         <el-table-column label="执行中" min-width="120" prop="in_pro_num">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
         <el-table-column label="预计发送" min-width="120" prop="expected_num">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
         <el-table-column label="成功数" min-width="120" prop="sucess_num">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
         <el-table-column label="失败数" min-width="120" prop="fail_num">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
         <el-table-column label="任务状态" min-width="100" prop="status">
-          <!--
+
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
               <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
@@ -105,7 +100,6 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          -->
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
           </template>
@@ -117,12 +111,12 @@
         </el-table-column>
         <el-table-column label="配置" min-width="150" prop="conf_str" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">详情</el-button>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" min-width="150" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.itime) }}
+            {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -130,10 +124,10 @@
           label="操作"
           prop="operation"
           show-overflow-tooltip
-          width="220"
+          width="150"
         >
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
+            <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -142,7 +136,7 @@
         <el-pagination
           :current-page.sync="queryData.page"
           :page-size="queryData.limit"
-          :page-sizes="pageOption"
+          :page-sizes="queryData.pageOption"
           :total="queryData.total"
           background
           layout="total, sizes, prev, pager, next, jumper"
@@ -154,6 +148,48 @@
 
     <!-- 新建 -->
     <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" />
+    <!-- 新建 -->
+    <detailList ref="refDetailList" :modal-height:="cliHeight" />
+    <!-- JSON 配置 -->
+    <el-dialog
+      :title="configData.title"
+      center
+      :visible.sync="configData.show"
+      :close-on-click-modal="false"
+      width="60%"
+      @close="closeConfigModal"
+    >
+
+      <div class="configContent">
+        <el-form label-width="150px">
+          <el-form-item
+            v-for="(item, index) in configData.formData"
+            :key="index"
+            :label="item.title+':'"
+          >
+            <!-- 数组类型（如 material_list） -->
+            <template v-if="Array.isArray(item.value)">
+              <div
+                v-for="(val, i) in item.value"
+                :key="i"
+                class="multi-line"
+              >
+                - {{ val }}
+              </div>
+            </template>
+
+            <!-- 普通字段 -->
+            <template v-else>
+              <span class="form-text">{{ item.value }}</span>
+            </template>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer">
+        <el-button @click="configData.show = false">关闭</el-button>
+      </span>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -161,13 +197,15 @@
 import {
   getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
 } from './api';
-import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
+import { resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp } from '@/filters'
 import actionModal from './components/actionModal'
+import detailList from './components/detailList'
 export default {
   name: 'SendPrivatelyTask',
   components: {
-    actionModal
+    actionModal,
+    detailList,
   },
   data() {
     return {
@@ -177,12 +215,12 @@ export default {
         total: 0,
         name: '',
         status: '',
+        pageOption: resetPage(),
       },
       formData: {},
       tableData: [],
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
-      pageOption: resetPage(),
       statusList: [
         { label: '全部', value: '0' },
         { label: '创建成功', value: '1' },
@@ -199,7 +237,6 @@ export default {
       cliHeight: null,
       loading: false,
       total: 0,
-
       batchOption: [
         { icon: 'delete', label: '批量删除' },
         { icon: 'lock', label: '批量关闭' },
@@ -212,6 +249,21 @@ export default {
       taskConfigList: [],
       accountGroup: [],
       tagList: [],
+      configData: {
+        title: '配置',
+        show: false,
+        formData: {},
+        kayData: {
+          send_type: '发送模式',
+          send_num: '账号每私发条数',
+          material_list: '群发话术',
+          replace_num: '转换数量',
+          min_time: '间隔最小时间',
+          max_time: '间隔最大时间',
+          data_pack_id: '数据包ID',
+        },
+        value: null
+      },
 
     }
   },
@@ -227,6 +279,7 @@ export default {
       });
     }, 150)
   },
+
   beforeDestroy() {
     window.removeEventListener('resize', this.setFullHeight);
   },
@@ -237,7 +290,7 @@ export default {
       const params = {
         page: num || this.queryData.page,
         limit: this.queryData.limit,
-        task_name: this.queryData.task_name,
+        name: this.queryData.name,
         status: Number(this.queryData.status) || -1,
       }
       getDataApi(params).then(res => {
@@ -246,7 +299,7 @@ export default {
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
             item.status = item.status ? String(item.status) : ''
-            item.gender = item.gender ? String(item.gender) : ''
+            item.send_type = item.send_type ? String(item.send_type) : ''
             return item
           });
           this.selectData = []
@@ -258,7 +311,6 @@ export default {
         }
       })
     },
-
     // 新建
     addOpenFun() {
       this.$refs.refActionModal.open(null,'add')
@@ -281,40 +333,12 @@ export default {
       })
     },
     // 详情
-    openDetailListFun(row, title) {
-      this.detailModal.show = true
-      this.detailModal.title = title
-      this.detailModal.cloneRow = deepClone(row)
-      if (title === '任务详情') {
-        this.detailModal.width = '85%'
-        this.getDetailListFun(1)
-      } else if (title === '任务状态') {
-        this.detailModal.width = '50%'
-        this.getDetailObjFun(row)
-      } else if (title === '查看') {
-        this.detailModal.width = '40%'
-      }
+    openDetailListFun(row) {
+      this.$refs.refDetailList.open(row)
     },
-    // 关闭新建
-    closeModal() {
-      this.addModal.show = false
-      setTimeout(() => {
-        this.addModal.formData = {
-          amount: 19,
-          material_group_id: '',
-          material_group_name: '',
-          link: '',
-          task_config_id: '',
-          group_id: '',
-          tags: []
-        }
-        this.$refs.refAddModal.resetFields();
-      }, 500);
-    },
-
     // 批量删除
     delDataFun() {
-      this.$confirm(`确认删除吗？`, '提示', {
+      this.$confirm(`确认批量删除吗？`, '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -343,7 +367,7 @@ export default {
     },
     // 批量关闭
     batchCloseDataFun() {
-      this.$confirm(`确认关闭吗？`, '提示', {
+      this.$confirm(`确认批量关闭吗？`, '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -370,6 +394,26 @@ export default {
         this.$message({ type: 'info', message: '已取消' });
       });
     },
+    // 打开配置
+    openConfigModal(row,kay) {
+      this.configData.show = true
+      this.configData.kay = kay
+      if (row[kay]) {
+        this.configData.value = JSON.parse(row[kay])
+        this.configData.formData = Object.keys(this.configData.value).map(key => {
+          return {
+            label: key,
+            title: this.configData.kayData[key],
+            value: this.configData.value[key]
+          }
+        })
+      }
+    },
+    // 关闭配置
+    closeConfigModal() {
+      this.configData.show = false
+      this.configData.value = ''
+    },
     // 选择项
     handleSelectionChange(arr) {
       this.selectData = arr
@@ -386,7 +430,6 @@ export default {
       }
       tableCell.toggleRowSelection(row, true);
     },
-
     // 行内筛选项
     handleRowQuery(val, key, type) {
       this.queryData[key] = val
@@ -400,6 +443,7 @@ export default {
         total: 0,
         name: '',
         status: '',
+        pageOption: resetPage(),
       }
       this.getDataListFun(1)
     },
@@ -408,9 +452,6 @@ export default {
       if (type === 'table') {
         this.queryData.limit = val;
         this.getDataListFun();
-      } else if (type === 'modal') {
-        this.detailModal.queryData.limit = val;
-        this.getDetailListFun();
       }
     },
     // 页码
@@ -418,9 +459,6 @@ export default {
       if (type === 'table') {
         this.queryData.page = val;
         this.getDataListFun();
-      } else if (type === 'modal') {
-        this.detailModal.queryData.page = val;
-        this.getDetailListFun();
       }
     },
     // 处理打开输入框无法输入问题
@@ -462,9 +500,6 @@ export default {
 
 .queryBox {
   margin-bottom:12px;
-  ::v-deep .el-form-item {
-    margin-bottom: 0;
-  }
 }
 
 .stateModal {
@@ -492,5 +527,14 @@ export default {
   color: #00a8ff;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.configContent{
+  height: 70vh;
+  padding: 15px;
+  border: #333333 1px solid;
+  border-radius: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

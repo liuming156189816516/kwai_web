@@ -76,7 +76,7 @@
           <el-row :gutter="20">
             <el-col :span="22">
               <el-form-item label="群发模式：" prop="send_type">
-                <el-radio-group v-model="formData.send_type">
+                <el-radio-group v-model="formData.send_type" @input="radioGroup">
                   <el-radio :label="1">普通文本</el-radio>
                   <el-radio :label="2">超链文本</el-radio>
                   <el-radio :label="3">混合发送</el-radio>
@@ -88,7 +88,7 @@
             <el-col :span="22">
               <el-form-item>
                 <div class="number_01">
-                  <span class="number_02">账号每私发条数</span>
+                  <span class="number_02">每个账号发送</span>
                   <span class="number_03">
                     <el-input-number
                       v-model="formData.send_num"
@@ -98,7 +98,7 @@
                       type="number"
                     />
                   </span>
-                  <span class="number_02">条数据则完成账号群发任务。</span>
+                  <span class="number_02">条。</span>
                 </div>
               </el-form-item>
             </el-col>
@@ -212,7 +212,7 @@
       :title="rhetoricModal.type==='add'?'新建':rhetoricModal.type==='edit'?'编辑':'查看'"
       :visible.sync="rhetoricModal.show"
       center
-      width="30%"
+      width="40%"
       @close="closeRhetoricModal"
     >
       <div class="content">
@@ -220,7 +220,7 @@
         <div>
           <el-input
             v-model="rhetoricModal.formData.content"
-            :rows="2"
+            :autosize="{ minRows: 15, maxRows: 20}"
             placeholder="请输入内容"
             type="textarea"
             @input="changeInput"
@@ -306,6 +306,14 @@ export default {
       this.$nextTick(() => {
         this.$refs['refFormData'].clearValidate('group_id');
       })
+    },
+    // 群发模式
+    radioGroup(val){
+      if (val===2){
+        this.formData.send_num = 5
+      }else {
+        this.formData.send_num = 115
+      }
     },
     // 选择账号分组
     changeAccountNum() {
