@@ -174,7 +174,7 @@
                 :key="i"
                 class="multi-line"
               >
-                - {{ val }}
+                {{ val }}
               </div>
             </template>
 
@@ -272,14 +272,6 @@ export default {
     window.addEventListener('resize', this.setFullHeight);
     this.getDataListFun(1); // 获取列表
   },
-  updated() {
-    setTimeout(() => {
-      this.$nextTick(() => {
-        this.$refs.serveTable.doLayout();
-      });
-    }, 150)
-  },
-
   beforeDestroy() {
     window.removeEventListener('resize', this.setFullHeight);
   },
