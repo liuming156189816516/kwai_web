@@ -7,9 +7,6 @@
         <el-input v-model="queryData.req_id" clearable placeholder="请输入请求ID" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.kw_account" clearable placeholder="请输入账号" @input="changeInput" />
-      </el-form-item>
-      <el-form-item>
         <el-input v-model="queryData.account_id" clearable placeholder="请输入账号ID" @input="changeInput" />
       </el-form-item>
       <el-form-item>
@@ -75,11 +72,6 @@
           </template>
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row[scope.column.property], pTypeList) || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="账号" min-width="120" prop="kw_account" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
         <el-table-column label="账号ID" min-width="120" prop="account_id" show-overflow-tooltip>
@@ -158,7 +150,6 @@ export default {
         limit: 10,
         total: 0,
         req_id: '',
-        kw_account: '',
         account_id: '',
         ptype: ''
       },
@@ -207,7 +198,6 @@ export default {
         page: num || this.queryData.page,
         limit: this.queryData.limit,
         req_id: this.queryData.req_id,
-        kw_account: this.queryData.kw_account,
         account_id: this.queryData.account_id,
         ptype: Number(this.queryData.ptype) || -1,
       }
@@ -325,7 +315,6 @@ export default {
         limit: 10,
         total: 0,
         req_id: '',
-        kw_account: '',
         account_id: '',
         ptype: ''
       }

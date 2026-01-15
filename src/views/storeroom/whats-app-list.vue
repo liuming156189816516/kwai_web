@@ -272,6 +272,10 @@
               </el-tag>
             </template>
           </u-table-column>
+          <u-table-column label="累计成功数" prop="sucess_num" min-width="120" />
+          <u-table-column label="累计失败数" prop="fail_num" min-width="120" />
+          <u-table-column label="今日成功数" prop="today_sucess_num" min-width="120" />
+          <u-table-column label="今日失败数" prop="today_fail_num" min-width="120" />
           <u-table-column label="原因" prop="reason" show-overflow-tooltip min-width="130">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
