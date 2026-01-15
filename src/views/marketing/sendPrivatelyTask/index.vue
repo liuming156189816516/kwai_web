@@ -111,7 +111,7 @@
         </el-table-column>
         <el-table-column label="配置" min-width="150" prop="conf_str" show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">详情</el-button>
+            <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">配置</el-button>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" min-width="150" prop="itime" show-overflow-tooltip>
