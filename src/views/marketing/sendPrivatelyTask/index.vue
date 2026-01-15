@@ -109,11 +109,6 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="配置" min-width="150" prop="conf_str" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">配置</el-button>
-          </template>
-        </el-table-column>
         <el-table-column label="创建时间" min-width="150" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row[scope.column.property]) }}
@@ -124,9 +119,10 @@
           label="操作"
           prop="operation"
           show-overflow-tooltip
-          width="150"
+          width="180"
         >
           <template slot-scope="scope">
+            <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">配置</el-button>
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">详情</el-button>
           </template>
         </el-table-column>
@@ -164,6 +160,7 @@
         <el-form label-width="150px">
           <el-form-item
             v-for="(item, index) in configData.formData"
+            v-show="item.title"
             :key="index"
             :label="item.title+':'"
           >
@@ -260,7 +257,6 @@ export default {
           replace_num: '转换数量',
           min_time: '间隔最小时间',
           max_time: '间隔最大时间',
-          data_pack_id: '数据包ID',
         },
         value: null
       },

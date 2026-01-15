@@ -61,11 +61,6 @@
                 {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
               </template>
             </el-table-column>
-            <el-table-column label="发送总数" min-width="120" prop="send_num">
-              <template slot-scope="scope">
-                {{ scope.row[scope.column.property] }}
-              </template>
-            </el-table-column>
             <el-table-column label="成功数" min-width="120" prop="sucess_num">
               <template slot-scope="scope">
                 {{ scope.row[scope.column.property] }}
