@@ -258,11 +258,11 @@ export default {
         group_id: [],
         data_pack_id: '',
         send_type: 1,
-        send_num: 115,
+        send_num: 90,
         min_time: 10,
         max_time: 15,
         material_list: [],
-        replace_num: 5,
+        replace_num: 6,
       },
       totalNum: 0,
       formRules: {
@@ -308,11 +308,17 @@ export default {
       })
     },
     // 群发模式
-    radioGroup(val){
-      if (val===2){
-        this.formData.send_num = 5
-      }else {
-        this.formData.send_num = 115
+    radioGroup(val) {
+      switch (val) {
+        case 1:
+          this.formData.send_num = 90
+              break;
+        case 2:
+          this.formData.send_num = 6
+          break;
+        case 3:
+          this.formData.send_num = 90
+          break;
       }
     },
     // 选择账号分组

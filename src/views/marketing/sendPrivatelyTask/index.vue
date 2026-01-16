@@ -32,9 +32,11 @@
         :height="cliHeight"
         border
         element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(255, 255, 255,1)"
         row-key="id"
-        show-body-overflow="title"
         style="width: 100%;"
+        show-summary
+        :summary-method="getTableSumFun"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -62,26 +64,10 @@
           </template>
         </el-table-column>
         <el-table-column label="账号总数" min-width="80" prop="account_num" />
-        <el-table-column label="执行中" min-width="120" prop="in_pro_num">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] }}
-          </template>
-        </el-table-column>
-        <el-table-column label="预计发送" min-width="120" prop="expected_num">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] }}
-          </template>
-        </el-table-column>
-        <el-table-column label="成功数" min-width="120" prop="sucess_num">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] }}
-          </template>
-        </el-table-column>
-        <el-table-column label="失败数" min-width="120" prop="fail_num">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] }}
-          </template>
-        </el-table-column>
+        <el-table-column label="执行中" min-width="120" prop="in_pro_num" />
+        <el-table-column label="预计发送" min-width="100" prop="expected_num" />
+        <el-table-column label="成功数" min-width="100" prop="sucess_num" />
+        <el-table-column label="失败数" min-width="100" prop="fail_num" />
         <el-table-column label="任务状态" min-width="100" prop="status">
 
           <template slot="header">
@@ -101,7 +87,9 @@
             </el-dropdown>
           </template>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
+            <el-tag :type="getLabelByVal(scope.row[scope.column.property], statusList,{ label: 'type', value: 'value' },)" size="small">
+              {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
@@ -109,7 +97,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" min-width="150" prop="itime" show-overflow-tooltip>
+        <el-table-column label="创建时间" min-width="160" prop="itime">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
@@ -195,7 +183,7 @@ import {
   getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
 } from './api';
 import { resetPage, successTips, getLabelByVal } from '@/utils';
-import { formatTimestamp } from '@/filters'
+import { formatTimestamp ,formatDecimal } from '@/filters'
 import actionModal from './components/actionModal'
 import detailList from './components/detailList'
 export default {
@@ -219,11 +207,12 @@ export default {
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
       statusList: [
-        { label: '全部', value: '0' },
-        { label: '创建成功', value: '1' },
-        { label: '执行中', value: '2' },
-        { label: '停止群发', value: '3' },
-        { label: '已完成', value: '4' },
+        { label: '全部', value: '0',type: '' },
+        { label: '创建成功', value: '1',type: 'info' },
+        { label: '执行中', value: '2',type: 'warning' },
+        { label: '关闭任务', value: '3',type: 'danger' },
+        { label: '停止群发', value: '4',type: 'danger' },
+        { label: '已完成', value: '5',type: 'success' },
       ],
       sendTypeList: [
         { label: '全部', value: '0' },
@@ -260,6 +249,7 @@ export default {
         },
         value: null
       },
+      showSumNum: [8, 9,10],
 
     }
   },
@@ -267,6 +257,13 @@ export default {
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
     this.getDataListFun(1); // 获取列表
+  },
+  updated() {
+    setTimeout(() => {
+      this.$nextTick(() => {
+        this.$refs.serveTable.doLayout();
+      });
+    }, 200)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setFullHeight);
@@ -408,6 +405,30 @@ export default {
       this.selectIdData = arr.map(item => {
         return item.id
       })
+    },
+    // 合计
+    getTableSumFun(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        const values = data.map(item => Number(item[column.property]));
+        if (index === 0) {
+          sums[index] = '统计';
+        } else if (this.showSumNum.includes(index)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return (prev + curr);
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = formatDecimal(sums[index])
+        } else {
+          sums[index] = '--';
+        }
+      });
+      return sums;
     },
     // 单行 点击勾选
     rowSelectChange(row, column, event) {

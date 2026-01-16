@@ -17,6 +17,15 @@
               <el-input v-model="queryData.account" clearable placeholder="请输入账号" @input="changeInput" />
             </el-form-item>
             <el-form-item>
+              <el-input v-model="queryData.account_id" clearable placeholder="请输入账号ID" @input="changeInput" />
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="queryData.device_id" clearable placeholder="请输入设备ID" @input="changeInput" />
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
+            </el-form-item>
+            <el-form-item>
               <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">查询</el-button>
               <el-button icon="el-icon-refresh-right" @click="resetTableFun(1)">重置</el-button>
             </el-form-item>
@@ -120,7 +129,8 @@
 
       </div>
     </el-dialog>
-  </div></template>
+  </div>
+</template>
 
 <script>
 
@@ -146,6 +156,9 @@ export default {
         task_id: '',
         account: '',
         status: '',
+        account_id: '',
+        device_id: '',
+        reason: '',
         page: 1,
         limit: 10,
         total: 0,
@@ -177,6 +190,9 @@ export default {
       const params = {
         task_id: this.formData.id,
         account: this.queryData.account,
+        account_id: this.queryData.account_id,
+        device_id: this.queryData.device_id,
+        reason: this.queryData.reason,
         status: Number(this.queryData.status) || -1,
         page: num || this.queryData.page,
         limit: this.queryData.limit,
@@ -209,6 +225,9 @@ export default {
         task_id: '',
         account: '',
         status: '',
+        account_id: '',
+        device_id: '',
+        reason: '',
         page: 1,
         limit: 10,
         total: 0,

@@ -550,18 +550,12 @@ export default {
         this.accountForm.group_id = this.groupOption.filter(item => item.name == this.accountForm.group_name)[0].id;
       }, 600)
     },
-    batchExport() {
-      this.storeModel = true;
-      this.$nextTick(() => {
-        this.storeIdx = 1;
-        this.dialog_title = this.$t('sys_mat043');
-      })
-    },
+    // 批量入库
     nextbtn() {
       this.storeModel = true;
       this.$nextTick(() => {
         this.storeIdx = 2;
-        this.dialog_title = `${this.$t('sys_mat045')}`;
+        this.dialog_title = '批量入库';
       })
     },
     changeType(idx) {
@@ -715,8 +709,10 @@ export default {
         that.$message({ type: 'info', message: that.$t('sys_c048') });
       })
     },
+    // 下载模板
     downLoadTemp() {
-      const txt = '{"cookies":{" store-country-code-src":"uid"," tt-target-idc":"useast5"," sid_guard":"c9c2fb797bd319413d92c7f0910d748e%7C1743471305%7C15552000%7CSun%2C+28-Sep-2025+01%3A35%3A05+GMT"," store-country-code":"us"," uid_tt_ss":"40cefe14a1422d444d7ea194aa7bd071b4edadd1b3b1401787c6daad2f935a47"," store-idc":"useast5"," sid_tt":"c9c2fb797bd319413d92c7f0910d748e"," ttreq":"1$b6e17eec2f4e34b65ed5ffa6d71924b0f29442cc"," uid_tt":"40cefe14a1422d444d7ea194aa7bd071b4edadd1b3b1401787c6daad2f935a47"," msToken":"QWrR-1vXk8DkWIo7qyE9s3isGUQcSQFCF6vcKkJ7WFowO9oEDuvRW72i2xTu-hw9-S5aVP47efOU4UymPknrC-QcgTu6jtpQ6ZqnqVpUnRSwrZhQOnB0WnotUYD4Zo0k8KsrFr88FuLL2YTfXLRA1I37Zt1q"," sessionid_ss":"c9c2fb797bd319413d92c7f0910d748e","passport_csrf_token":"8448f375767375bf8fe4f25c323a374a"," tt_ticket_guard_has_set_public_key":"1"," passport_csrf_token_default":"8448f375767375bf8fe4f25c323a374a"," cmpl_token":"AgQQAPNSF-RP_bHdPee6ed0_YrbZBJcf6nZYNj7yw"," store-country-sign":"MEIEDENqsYCBbgTpKaC8IQQgsWHYdzE-h5MK7Sv_MrETfMT7w3Pcy96g9YPonRE6aEEELYAevNHRqk5K9kqeLP_NTE"," sessionid":"c9c2fb797bd319413d92c7f0910d748e"," multi_sids":"7053713714067473414%3Ac9c2fb797bd319413d92c7f0910d748e"," d_ticket":"47521507d8c1fe93f78d9028d431b5c619e33"," odin_tt":"bb2581866ff4685841d94ff229546d06283e90eab072a63a3b7d4fe2c7d77c0e069133c229b8e6e351f65135345136a0b376d6f40dcd6ce597cfe82aaab176223ac6ad4fb0679729b2545439b8378a92"," install_id":"7488151925856388910"},"params":{"ab_version":"37.6.3","ac":"wifi","ac2":"wifi5g","aid":"1180","app_language":"en","app_name":"trill","app_type":"normal","build_number":"37.6.3","carrier_region":"BR","carrier_region_v2":"724","cdid":"06718ee9-d293-45d3-aefc-c560aceef3d3","channel":"googleplay","current_region":"JP","device_brand":"google","device_id":"7488151750046860843","device_platform":"android","device_type":"Pixel 6","dpi":"420","host_abi":"arm64-v8a","iid":"7488151925856388910","is_pad":"0","language":"en","locale":"en-GB","manifest_version_code":"370603","op_region":"BR","openudid":"50cf244aa2bd14b7","os":"android","os_api":"34","os_version":"14","region":"TH","residence":"BR","resolution":"1080*2146","ssmix":"a","sys_region":"TH","timezone_name":"Asia/Shanghai","timezone_offset":"28800","uoo":"1","update_version_code":"370603","version_code":"370603","version_name":"37.6.3"},"userSession":{"appVersion":"37.6.3","deviceType":"Pixel 6","did":"7488151750046860843","iid":"7488151925856388910","lanusk":"#H4TG3veDPc7QpupHdNEETQ85NK13d9RREFRu7XspmdTZmlN4zWjIe5oFwUlkcd0qPM/etLTB+j5aWDXJ","osVersion":"14","privateKey":"572BB19613B82C865BA27F2E4D0BACAD44FFE269E86BE57FCC7BE135BB9DA69E","publicKey":"04E29B280E224441414C9E8A9AFC6706AAD84A1970E2562A58A6347B2E54E425C00938E0B4C1E0EAB234DC70F4C7EB6B86A0D1AB49682BEB313F2A1BB5C167ACCD","secUid":"MS4wLjABAAAArvYUISpxjJo7g34Z4PBAgwXt9q6ZXD8wXR4WKe33E_Ir85H3OE8ZJ09zg1rxVGj5","seedId":0,"tsSign":"{\\"ts_sign_ree\\":\\"ts.1.12257a38e6fb68aa97c425d96abb1836445b029b30260a9ea3be2e7a9190c5bc7a50e8a417df069df9a555bd16c66ef8b3639a56b642d7d8f9c881f42b9329ec\\"}","uid":"7053713714067473414","xtToken":"04c9c2fb797bd319413d92c7f0910d748e0550d8eaa726cc51dd7f1198bdcd62527c5acd380542f338ae5e24ed38b635223f7ce989c50eb839d361b456f506af47063a10aec602f73e48fdeb61fc4d804b31249134a46b5d1c8f03bc6e4f98033aba0--0a4e0a20468fb46a5751e4bd4cca9eb8e9211dd2cd657b7b1e9ebfcc0750c23dfa6b31811220feed2ca1cd3b35e021bc9f6922113cc5e0d1fa7a745fca43e6748ecb13164ed21801220674696b746f6b-3.0.0"}}'
+      const txt = 'xxxxxxxxxx----yyyyyy\n' +
+          'cccccccccc----vvvvvv'
       var blob = new Blob([txt], { type: 'text/plain' });
       var a = document.createElement('a');
       a.href = window.URL.createObjectURL(blob);

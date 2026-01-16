@@ -21,6 +21,18 @@
         <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
       </el-form-item>
       <el-form-item>
+        <el-input v-model="queryData.sucess_num" clearable placeholder="请输入累计成功数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.fail_num" clearable placeholder="请输入累计失败数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_sucess_num" clearable placeholder="请输入目前成功数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_fail_num" clearable placeholder="请输入目前失败数" />
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
@@ -29,7 +41,7 @@
 
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button type="primary" :disabled="idx===0||checkIdArray.length===0" @click="batchLaunch"> 批量上线 </el-button>
+        <el-button :disabled="idx===0||checkIdArray.length===0" type="primary" @click="batchLaunch"> 批量上线</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
@@ -210,18 +222,18 @@
               <el-avatar v-else icon="el-icon-user-solid" />
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" min-width="100" />
-          <u-table-column label="账号ID" prop="account_id" show-overflow-tooltip min-width="120">
+          <u-table-column label="账号" min-width="100" prop="account" />
+          <u-table-column label="账号ID" min-width="120" prop="account_id" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip min-width="120">
+          <u-table-column label="设备ID" min-width="120" prop="device_id" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id === '0' ? '-' : scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号状态" prop="status" min-width="130">
+          <u-table-column label="账号状态" min-width="130" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[queryData.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -231,9 +243,9 @@
                   <el-dropdown-item
                     v-for="(item,idx) in accountOptions"
                     :key="idx"
-                    :class="{'dropdown_selected':idx==queryData.status}"
+                    :class="{'dropdown_selected':idx === queryData.status}"
                     :command="idx"
-                  >{{ item == '' ? $t('sys_l053') : item }}
+                  >{{ item === '' ? $t('sys_l053') : item }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -242,7 +254,7 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" prop="use_status" min-width="100">
+          <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[queryData.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -265,23 +277,23 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" prop="limit_err" show-overflow-tooltip min-width="180">
+          <u-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-tag size="small" type="danger">
                 {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="累计成功数" prop="sucess_num" min-width="120" />
-          <u-table-column label="累计失败数" prop="fail_num" min-width="120" />
-          <u-table-column label="今日成功数" prop="today_sucess_num" min-width="120" />
-          <u-table-column label="今日失败数" prop="today_fail_num" min-width="120" />
-          <u-table-column label="原因" prop="reason" show-overflow-tooltip min-width="130">
+          <u-table-column label="累计成功数" min-width="120" prop="sucess_num" sortable="custom" />
+          <u-table-column label="累计失败数" min-width="120" prop="fail_num" sortable="custom" />
+          <u-table-column label="目前成功数" min-width="120" prop="today_sucess_num" sortable="custom" />
+          <u-table-column label="目前失败数" min-width="120" prop="today_fail_num" sortable="custom" />
+          <u-table-column label="原因" min-width="130" prop="reason" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="备注" prop="remark" show-overflow-tooltip min-width="100">
+          <u-table-column label="备注" min-width="100" prop="remark" show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
@@ -289,12 +301,12 @@
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="入库时间" prop="itime" show-overflow-tooltip min-width="150">
+          <u-table-column label="入库时间" min-width="150" prop="itime" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip min-width="150">
+          <u-table-column label="冻结时间" min-width="150" prop="freeze_time" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
             </template>
@@ -435,6 +447,10 @@ export default {
         limit_err: [],
         sort: '',
         reason: '',
+        sucess_num: '',
+        fail_num: '',
+        today_sucess_num: '',
+        today_fail_num: '',
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -713,6 +729,10 @@ export default {
         limit_err: limitErr,
         group_id: this.queryData.group_id, // 分组
         reason: this.queryData.reason,
+        sucess_num: Number(this.queryData.sucess_num) || 0,
+        fail_num: Number(this.queryData.fail_num) || 0,
+        today_sucess_num: Number(this.queryData.today_sucess_num) || 0,
+        today_fail_num: Number(this.queryData.today_fail_num) || 0,
       }
 
       getaccountinfolist(params).then(res => {
@@ -738,7 +758,7 @@ export default {
     },
     // 重置 列表
     restQueryBtn() {
-      this.queryData ={
+      this.queryData = {
         page: 1,
         limit: 100,
         total: 0,
@@ -754,6 +774,10 @@ export default {
         limit_err: [],
         sort: '',
         reason: '',
+        sucess_num: '',
+        fail_num: '',
+        today_sucess_num: '',
+        today_fail_num: '',
       }
       this.checkIdArray = [];
       this.checkAccount = [];
@@ -912,6 +936,39 @@ export default {
     },
     // 筛选项 排序
     handleSortChange({ column, prop, order }) {
+      if (order === 'descending') { // 下降 倒序
+        switch (prop) {
+          case 'sucess_num': // 累计成功数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'fail_num': // 累计失败数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_sucess_num': // 目前成功数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_fail_num': // 目前失败数
+            this.queryData.sort = '-' + prop
+            break;
+        }
+      } else if (order === 'ascending') { // 上升 = 正序
+        switch (prop) {
+          case 'sucess_num': // 累计成功数
+            this.queryData.sort = prop
+            break;
+          case 'fail_num': // 累计失败数
+            this.queryData.sort = prop
+            break;
+          case 'today_sucess_num': // 目前成功数
+            this.queryData.sort = prop
+            break;
+          case 'today_fail_num': // 目前失败数
+            this.queryData.sort = prop
+            break;
+        }
+      } else {
+        this.queryData.sort = ''
+      }
       this.initNumberList();
     },
     // 单行 点击勾选
