@@ -98,7 +98,9 @@
                 </el-dropdown>
               </template>
               <template slot-scope="scope">
-                {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
+                <el-tag :type="getLabelByVal(scope.row[scope.column.property], statusList,{ label: 'type', value: 'value' },)" size="small">
+                  {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column label="原因" min-width="150" prop="reason">
@@ -165,11 +167,12 @@ export default {
         pageOption: resetPage(),
       },
       statusList: [
-        { label: '全部', value: '0' },
-        { label: '创建成功', value: '1' },
-        { label: '执行中', value: '2' },
-        { label: '停止群发', value: '3' },
-        { label: '已完成', value: '4' },
+        { label: '全部', value: '0',type: '' },
+        { label: '创建成功', value: '1',type: 'info' },
+        { label: '执行中', value: '2',type: 'warning' },
+        { label: '关闭任务', value: '3',type: 'danger' },
+        { label: '停止群发', value: '4',type: 'danger' },
+        { label: '已完成', value: '5',type: 'success' },
       ],
       selectData: [],
       selectIdData: [],
