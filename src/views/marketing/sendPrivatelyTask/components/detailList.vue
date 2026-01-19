@@ -23,6 +23,9 @@
               <el-input v-model="queryData.device_id" clearable placeholder="请输入设备ID" @input="changeInput" />
             </el-form-item>
             <el-form-item>
+              <el-input v-model="queryData.phones" clearable placeholder="请输入发送数据" @input="changeInput" />
+            </el-form-item>
+            <el-form-item>
               <el-input v-model="queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
             </el-form-item>
             <el-form-item>
@@ -66,6 +69,11 @@
               </template>
             </el-table-column>
             <el-table-column label="预计发送" min-width="120" prop="expected_num">
+              <template slot-scope="scope">
+                {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="发送数据" min-width="180" prop="phones" show-overflow-tooltip>
               <template slot-scope="scope">
                 {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
               </template>
@@ -160,6 +168,7 @@ export default {
         status: '',
         account_id: '',
         device_id: '',
+        phones:'',
         reason: '',
         page: 1,
         limit: 10,
@@ -195,6 +204,7 @@ export default {
         account: this.queryData.account,
         account_id: this.queryData.account_id,
         device_id: this.queryData.device_id,
+        phones:this.queryData.phones,
         reason: this.queryData.reason,
         status: Number(this.queryData.status) || -1,
         page: num || this.queryData.page,

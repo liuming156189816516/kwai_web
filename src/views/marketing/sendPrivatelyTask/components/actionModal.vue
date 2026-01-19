@@ -314,7 +314,7 @@ export default {
           this.formData.send_num = 90
               break;
         case 2:
-          this.formData.send_num = 6
+          this.formData.send_num = 5
           break;
         case 3:
           this.formData.send_num = 90
@@ -391,7 +391,6 @@ export default {
       this.modal.loading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.modal.loading = false
           if (this.formData.send_type !== 3) {
             delete this.formData.replace_num
           }
@@ -402,7 +401,8 @@ export default {
           data.formData.material_list = this.formData.material_list.map(item => { return item.content })
           this.$emit('saveData',data)
         } else {
-          console.log('error submit!!');
+          this.modal.loading = false
+          this.$message.error('提交失败！')
           return false;
         }
       });
