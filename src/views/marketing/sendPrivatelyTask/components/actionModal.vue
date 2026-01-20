@@ -198,8 +198,8 @@
           </el-row>
 
           <el-form-item>
-            <el-button :loading="modal.loading" :disabled="modal.loading" type="primary" @click="submitForm('refFormData')">开始群发</el-button>
-            <el-button @click="$router.go(-1)">取消</el-button>
+            <el-button :loading="modal.loading" type="primary" @click="submitForm('refFormData')">开始群发</el-button>
+            <el-button @click="closeModal">取消</el-button>
           </el-form-item>
         </el-form>
 
@@ -252,6 +252,7 @@ export default {
       modal: {
         show: false,
         type: '',
+        loading: false,
       },
       formData: {
         name: '',
@@ -388,15 +389,15 @@ export default {
     },
     // 提交
     submitForm(formName) {
-      this.modal.loading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.modal.loading = true
           if (this.formData.send_type !== 3) {
             delete this.formData.replace_num
           }
           const data = {
             type: this.modal.type,
-            formData: this.formData
+            formData: deepClone(this.formData)
           }
           data.formData.material_list = this.formData.material_list.map(item => { return item.content })
           this.$emit('saveData',data)

@@ -386,11 +386,15 @@ export default {
       if (row[kay]) {
         this.configData.value = JSON.parse(row[kay])
         this.configData.formData = Object.keys(this.configData.value).map(key => {
-          return {
+          const item = {
             label: key,
             title: this.configData.kayData[key],
             value: this.configData.value[key]
           }
+          if (key === 'send_type') {
+            item.value = getLabelByVal(String(item.value),this.sendTypeList)
+          }
+          return item
         })
       }
     },

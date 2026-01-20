@@ -13,30 +13,36 @@
         <el-input v-model="queryData.device_id" clearable placeholder="请输入设备ID" />
       </el-form-item>
       <el-form-item>
-        <el-select v-model="queryData.limit_err" clearable filterable multiple placeholder="请选择功能限制">
-          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
         <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.sucess_num" clearable placeholder="请输入累计成功数" />
+        <el-input v-model="queryData.link_success_num" clearable placeholder="请输入累计链接成功数" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.fail_num" clearable placeholder="请输入累计失败数" />
+        <el-input v-model="queryData.link_fail_num" clearable placeholder="请输入累计链接失败数" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.today_sucess_num" clearable placeholder="请输入目前成功数" />
+        <el-input v-model="queryData.text_success_num" clearable placeholder="请输入累计文本成功数" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.today_fail_num" clearable placeholder="请输入目前失败数" />
+        <el-input v-model="queryData.text_fail_num" clearable placeholder="请输入累计文本失败数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_link_success_num" clearable placeholder="请输入目前链接成功数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_link_fail_num" clearable placeholder="请输入目前链接失败数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_text_success_num" clearable placeholder="请输入目前文本成功数" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.today_text_fail_num" clearable placeholder="请输入目前文本失败数" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
-
     </el-form>
 
     <el-form :inline="true" size="small">
@@ -277,17 +283,15 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-tag size="small" type="danger">
-                {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
-              </el-tag>
-            </template>
-          </u-table-column>
-          <u-table-column label="累计成功数" min-width="120" prop="sucess_num" sortable="custom" />
-          <u-table-column label="累计失败数" min-width="120" prop="fail_num" sortable="custom" />
-          <u-table-column label="目前成功数" min-width="120" prop="today_sucess_num" sortable="custom" />
-          <u-table-column label="目前失败数" min-width="120" prop="today_fail_num" sortable="custom" />
+
+          <u-table-column label="累计链接成功数" min-width="120" prop="link_success_num" sortable="custom" />
+          <u-table-column label="累计链接失败数" min-width="120" prop="link_fail_num" sortable="custom" />
+          <u-table-column label="累计文本成功数" min-width="120" prop="text_success_num" sortable="custom" />
+          <u-table-column label="累计文本失败数" min-width="120" prop="text_fail_num" sortable="custom" />
+          <u-table-column label="目前链接成功数" min-width="120" prop="today_link_success_num" sortable="custom" />
+          <u-table-column label="目前链接失败数" min-width="120" prop="today_link_fail_num" sortable="custom" />
+          <u-table-column label="目前文本成功数" min-width="120" prop="today_text_success_num" sortable="custom" />
+          <u-table-column label="目前文本失败数" min-width="120" prop="today_text_fail_num" sortable="custom" />
           <u-table-column label="原因" min-width="130" prop="reason" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
@@ -444,13 +448,16 @@ export default {
         group_name: '',
         account_id: '',
         device_id: '',
-        limit_err: [],
         sort: '',
         reason: '',
-        sucess_num: '',
-        fail_num: '',
-        today_sucess_num: '',
-        today_fail_num: '',
+        link_success_num: '',
+        link_fail_num: '',
+        text_success_num: '',
+        text_fail_num: '',
+        today_link_success_num: '',
+        today_link_fail_num: '',
+        today_text_success_num: '',
+        today_text_fail_num: '',
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -714,9 +721,7 @@ export default {
     initNumberList(num) {
       this.loading = true;
       this.queryData.page = num || this.queryData.page;
-      const limitErr = this.queryData.limit_err.map(item => {
-        return item * 1
-      })
+
       const params = {
         page: this.queryData.page,
         limit: this.queryData.limit,
@@ -726,13 +731,16 @@ export default {
         use_status: this.queryData.use_status === 0 ? 0 : this.queryData.use_status || -1,
         device_id: this.queryData.device_id,
         account_id: this.queryData.account_id,
-        limit_err: limitErr,
         group_id: this.queryData.group_id, // 分组
         reason: this.queryData.reason,
-        sucess_num: Number(this.queryData.sucess_num) || 0,
-        fail_num: Number(this.queryData.fail_num) || 0,
-        today_sucess_num: Number(this.queryData.today_sucess_num) || 0,
-        today_fail_num: Number(this.queryData.today_fail_num) || 0,
+        link_success_num: Number(this.queryData.link_success_num) || 0,
+        link_fail_num: Number(this.queryData.link_fail_num) || 0,
+        text_success_num: Number(this.queryData.text_success_num) || 0,
+        text_fail_num: Number(this.queryData.text_fail_num) || 0,
+        today_link_success_num: Number(this.queryData.today_link_success_num) || 0,
+        today_link_fail_num: Number(this.queryData.today_link_fail_num) || 0,
+        today_text_success_num: Number(this.queryData.today_text_success_num) || 0,
+        today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
       }
 
       getaccountinfolist(params).then(res => {
@@ -741,13 +749,6 @@ export default {
 
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
-          const limitArr = []
-          if (item.limit_err) {
-            item.limit_err.forEach(one => {
-              limitArr.push(one.toString())
-            })
-          }
-          item.limit_err = limitArr
           return item
         });
         this.$nextTick(() => {
@@ -771,14 +772,18 @@ export default {
         group_name: '',
         account_id: '',
         device_id: '',
-        limit_err: [],
         sort: '',
         reason: '',
-        sucess_num: '',
-        fail_num: '',
-        today_sucess_num: '',
-        today_fail_num: '',
+        link_success_num: '',
+        link_fail_num: '',
+        text_success_num: '',
+        text_fail_num: '',
+        today_link_success_num: '',
+        today_link_fail_num: '',
+        today_text_success_num: '',
+        today_text_fail_num: '',
       }
+
       this.checkIdArray = [];
       this.checkAccount = [];
       this.selectArray = []
@@ -938,33 +943,56 @@ export default {
     handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
-          case 'sucess_num': // 累计成功数
+          case 'link_success_num': // 累计链接成功数
             this.queryData.sort = '-' + prop
             break;
-          case 'fail_num': // 累计失败数
+          case 'link_fail_num': // 累计链接失败数
             this.queryData.sort = '-' + prop
             break;
-          case 'today_sucess_num': // 目前成功数
+          case 'text_success_num': // 累计文本成功数
             this.queryData.sort = '-' + prop
             break;
-          case 'today_fail_num': // 目前失败数
+          case 'text_fail_num': // 累计文本失败数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_link_success_num': // 目前链接成功数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_link_fail_num': // 目前链接失败数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_text_success_num': // 目前文本成功数
+            this.queryData.sort = '-' + prop
+            break;
+          case 'today_text_fail_num': // 目前文本失败数
             this.queryData.sort = '-' + prop
             break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
-          case 'sucess_num': // 累计成功数
+          case 'link_success_num': // 累计链接成功数
             this.queryData.sort = prop
             break;
-          case 'fail_num': // 累计失败数
+          case 'link_fail_num': // 累计链接失败数
             this.queryData.sort = prop
             break;
-          case 'today_sucess_num': // 目前成功数
+          case 'text_success_num': // 累计文本成功数
             this.queryData.sort = prop
             break;
-          case 'today_fail_num': // 目前失败数
+          case 'text_fail_num': // 累计文本失败数
             this.queryData.sort = prop
             break;
+          case 'today_link_success_num': // 目前链接成功数
+            this.queryData.sort = prop
+            break;
+          case 'today_link_fail_num': // 目前链接失败数
+            this.queryData.sort = prop
+            break;
+          case 'today_text_success_num': // 目前文本成功数
+            this.queryData.sort = prop
+            break;
+          case 'today_text_fail_num': // 目前文本失败数
+            this.queryData.sort = prop
         }
       } else {
         this.queryData.sort = ''
