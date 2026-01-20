@@ -156,3 +156,8 @@ export const setaccountunavailableApi = (params) => {
 export const setassigndeviceidApi = (params) => {
   return request({ url: '/account/assigndeviceid', method: 'post', data: params })
 }
+
+// 设置可用状态
+export const batchUnfreezeAccountApi = (params) => {
+  return request({ url: '/account/batchunfreezeaccount', method: 'post', data: params })
+}

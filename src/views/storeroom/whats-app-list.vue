@@ -382,8 +382,18 @@
           </el-form-item>
         </template>
 
+        <!-- 批量解冻 -->
+        <template v-if="batchOptionData.btnLabel === '批量解冻' ">
+          <el-form-item label="最小冻结时长（小时）" label-width="180px" prop="min_hour">
+            <el-input v-model="batchOptionData.ipForm.min_hour" clearable placeholder="请输入最小冻结时长（小时" />
+          </el-form-item>
+          <el-form-item label="最大冻结时长（小时）" label-width="180px" prop="max_hour">
+            <el-input v-model="batchOptionData.ipForm.max_hour" clearable placeholder="请输入最大冻结时长（小时" />
+          </el-form-item>
+        </template>
+
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
-          <el-button @click="batchOptionData.show = false">{{ $t('sys_c023') }}</el-button>
+          <el-button @click="batchOptionData.show = false">取消</el-button>
           <el-button
             :loading="isLoading"
             type="primary"
@@ -429,7 +439,7 @@ import {
   dobatchaccountdetailApi,
   dobatchlogin,
   updateaccountavailabilityApi,
-  setaccountunavailableApi,
+  setaccountunavailableApi, batchUnfreezeAccountApi,
 } from '@/api/storeroom'
 
 export default {
@@ -612,7 +622,9 @@ export default {
           allocat_role: 1,
           seat_type: 1,
           staffCheck: [],
-          deviceIdText: ''
+          deviceIdText: '',
+          min_hour: '', // 最小
+          max_hour: '', // 最大
         },
         ipRules: {
           use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
@@ -625,6 +637,9 @@ export default {
           allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           seat_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          min_hour: [{ required: true, message: '请输入', trigger: 'change' }],
+          max_hour: [{ required: true, message: '请输入', trigger: 'change' }],
+
         },
         btnLabel: ''
       },
@@ -665,7 +680,7 @@ export default {
         { icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount },
         { icon: 'edit', label: '批量修改备注', index: 5, api: doupremark },
         { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi },
-        { icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi },
+        { icon: 's-tools', label: '批量解冻', index: 12, api: batchUnfreezeAccountApi },
       ]
     },
   },
@@ -801,7 +816,7 @@ export default {
       }
       this.batchOptionData.title = command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
-      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注') {
+      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' || command.item.label === '批量解冻') {
         this.batchOptionData.show = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
@@ -894,7 +909,7 @@ export default {
     },
     // 批量操作 弹窗确认
     submitSetBtn(formName) {
-      this.$refs.refForm.validate((valid) => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = {}
           this.batchOptionData.ipForm.account ? params.accounts = [this.batchOptionData.ipForm.account] : params.accounts = this.checkAccount;
@@ -904,6 +919,15 @@ export default {
             params.group_id = this.batchOptionData.ipForm.group_id // 移动分组
           } else if (this.batchOptionData.btnLabel === '批量修改备注') {
             params.remark = this.batchOptionData.ipForm.remock_text // 修改备注
+          } else if (this.batchOptionData.btnLabel === '批量解冻') {
+            const min_hour = this.batchOptionData.ipForm.min_hour
+            const max_hour = this.batchOptionData.ipForm.max_hour
+            if (max_hour <= min_hour) {
+              this.$message.error('最大值不可以小于等于最小值')
+              return false
+            }
+            params.min_hour = min_hour > 0 ? Number(min_hour) : 0 // 最小冻结时长（小时）
+            params.max_hour = max_hour > 0 ? Number(max_hour) : 0 // 最大冻结时长（小时）
           }
           let reqApi;
           this.isLoading = true;
