@@ -16,6 +16,9 @@
         <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
       </el-form-item>
       <el-form-item>
+        <el-input v-model="queryData.remark" clearable placeholder="请输入备注" />
+      </el-form-item>
+      <el-form-item>
         <el-input v-model="queryData.link_success_num" clearable placeholder="请输入累计链接成功数" />
       </el-form-item>
       <el-form-item>
@@ -438,7 +441,6 @@ import {
   sortgroup,
   dobatchaccountdetailApi,
   dobatchlogin,
-  updateaccountavailabilityApi,
   setaccountunavailableApi, batchUnfreezeAccountApi,
 } from '@/api/storeroom'
 
@@ -460,6 +462,7 @@ export default {
         device_id: '',
         sort: '',
         reason: '',
+        remark: '',
         link_success_num: '',
         link_fail_num: '',
         text_success_num: '',
@@ -748,6 +751,7 @@ export default {
         account_id: this.queryData.account_id,
         group_id: this.queryData.group_id, // 分组
         reason: this.queryData.reason,
+        remark: this.queryData.remark,
         link_success_num: Number(this.queryData.link_success_num) || 0,
         link_fail_num: Number(this.queryData.link_fail_num) || 0,
         text_success_num: Number(this.queryData.text_success_num) || 0,
@@ -789,6 +793,7 @@ export default {
         device_id: '',
         sort: '',
         reason: '',
+        remark: '',
         link_success_num: '',
         link_fail_num: '',
         text_success_num: '',
