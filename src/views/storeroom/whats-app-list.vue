@@ -917,25 +917,27 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = {
-            page: this.queryData.page,
-            limit: this.queryData.limit,
-            account: this.queryData.account, // 账号
-            sort: this.queryData.sort, // 排序
-            status: this.queryData.status || -1,
-            use_status: this.queryData.use_status === 0 ? 0 : this.queryData.use_status || -1,
-            device_id: this.queryData.device_id,
-            account_id: this.queryData.account_id,
-            group_id: this.queryData.group_id, // 分组
-            reason: this.queryData.reason,
-            remark: this.queryData.remark,
-            link_success_num: Number(this.queryData.link_success_num) || 0,
-            link_fail_num: Number(this.queryData.link_fail_num) || 0,
-            text_success_num: Number(this.queryData.text_success_num) || 0,
-            text_fail_num: Number(this.queryData.text_fail_num) || 0,
-            today_link_success_num: Number(this.queryData.today_link_success_num) || 0,
-            today_link_fail_num: Number(this.queryData.today_link_fail_num) || 0,
-            today_text_success_num: Number(this.queryData.today_text_success_num) || 0,
-            today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
+            list_req: {
+              page: this.queryData.page,
+              limit: this.queryData.limit,
+              account: this.queryData.account, // 账号
+              sort: this.queryData.sort, // 排序
+              status: this.queryData.status || -1,
+              use_status: this.queryData.use_status === 0 ? 0 : this.queryData.use_status || -1,
+              device_id: this.queryData.device_id,
+              account_id: this.queryData.account_id,
+              group_id: this.queryData.group_id, // 分组
+              reason: this.queryData.reason,
+              remark: this.queryData.remark,
+              link_success_num: Number(this.queryData.link_success_num) || 0,
+              link_fail_num: Number(this.queryData.link_fail_num) || 0,
+              text_success_num: Number(this.queryData.text_success_num) || 0,
+              text_fail_num: Number(this.queryData.text_fail_num) || 0,
+              today_link_success_num: Number(this.queryData.today_link_success_num) || 0,
+              today_link_fail_num: Number(this.queryData.today_link_fail_num) || 0,
+              today_text_success_num: Number(this.queryData.today_text_success_num) || 0,
+              today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
+            }
           }
           this.batchOptionData.ipForm.account ? params.accounts = [this.batchOptionData.ipForm.account] : params.accounts = this.checkAccount;
           if (this.batchOptionData.btnLabel === '批量下线') {
