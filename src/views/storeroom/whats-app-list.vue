@@ -65,6 +65,9 @@
           </el-dropdown-menu>
         </el-dropdown>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="allChecked">全选</el-button>
+      </el-form-item>
     </el-form>
     <!-- 分组管理 -->
     <div class="continer_main">
@@ -657,9 +660,6 @@ export default {
     }
   },
   computed: {
-    accountType() {
-      return ['', this.$t('sys_l067'), this.$t('sys_l068')]
-    },
     accountOptions() {
       return ['', this.$t('sys_g032'), this.$t('sys_g033'), this.$t('sys_g034')]
     },
@@ -816,9 +816,9 @@ export default {
       this.batchOptionData.ipForm.account = '';
       this.blockAccount = [];
       this.inheritAccount = [];
-      if (this.checkIdArray.length === 0) {
-        return successTips(this, 'error', this.$t('sys_c126'));
-      }
+      // if (this.checkIdArray.length === 0) {
+      //   return successTips(this, 'error', '请勾选要操作的列表!');
+      // }
       this.batchOptionData.title = command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
       if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' || command.item.label === '批量解冻') {
@@ -916,7 +916,27 @@ export default {
     submitSetBtn(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const params = {}
+          const params = {
+            page: this.queryData.page,
+            limit: this.queryData.limit,
+            account: this.queryData.account, // 账号
+            sort: this.queryData.sort, // 排序
+            status: this.queryData.status || -1,
+            use_status: this.queryData.use_status === 0 ? 0 : this.queryData.use_status || -1,
+            device_id: this.queryData.device_id,
+            account_id: this.queryData.account_id,
+            group_id: this.queryData.group_id, // 分组
+            reason: this.queryData.reason,
+            remark: this.queryData.remark,
+            link_success_num: Number(this.queryData.link_success_num) || 0,
+            link_fail_num: Number(this.queryData.link_fail_num) || 0,
+            text_success_num: Number(this.queryData.text_success_num) || 0,
+            text_fail_num: Number(this.queryData.text_fail_num) || 0,
+            today_link_success_num: Number(this.queryData.today_link_success_num) || 0,
+            today_link_fail_num: Number(this.queryData.today_link_fail_num) || 0,
+            today_text_success_num: Number(this.queryData.today_text_success_num) || 0,
+            today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
+          }
           this.batchOptionData.ipForm.account ? params.accounts = [this.batchOptionData.ipForm.account] : params.accounts = this.checkAccount;
           if (this.batchOptionData.btnLabel === '批量下线') {
             params.expire_time = Date.parse(this.$baseFun.resetTime(this.batchOptionData.ipForm.expire_time)) / 1000;
@@ -957,6 +977,10 @@ export default {
           return false;
         }
       });
+    },
+    // 全选
+    allChecked() {
+      console.log('123')
     },
     // 分页 切换
     homelHandleSize(val) {
