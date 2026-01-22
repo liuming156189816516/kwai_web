@@ -65,9 +65,6 @@
           </el-dropdown-menu>
         </el-dropdown>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="allChecked">全选</el-button>
-      </el-form-item>
     </el-form>
     <!-- 分组管理 -->
     <div class="continer_main">
