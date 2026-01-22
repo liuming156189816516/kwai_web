@@ -8,6 +8,16 @@
           <el-input v-model="queryData.name" clearable placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
         <el-form-item>
+          <el-date-picker
+              v-model="queryData.time"
+              end-placeholder="结束日期"
+              range-separator="至"
+              start-placeholder="开始日期"
+              style="width: 380px"
+              type="datetimerange"
+          />
+        </el-form-item>
+        <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">查询</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">重置</el-button>
           <el-button type="primary" :disabled="!selectIdData.length" @click="batchCloseDataFun">批量关闭</el-button>
@@ -182,8 +192,8 @@
 import {
   getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
 } from './api';
-import { resetPage, successTips, getLabelByVal } from '@/utils';
-import { formatTimestamp ,formatDecimal } from '@/filters'
+import { resetPage, successTips, getLabelByVal,zonedTimeToTimestamp } from '@/utils';
+import { formatTimestamp ,formatDecimal ,formatDateTime} from '@/filters'
 import actionModal from './components/actionModal'
 import detailList from './components/detailList'
 export default {
@@ -200,6 +210,7 @@ export default {
         total: 0,
         name: '',
         status: '',
+        time:[],
         pageOption: resetPage(),
       },
       formData: {},
@@ -254,6 +265,10 @@ export default {
     }
   },
   mounted() {
+    // const startTime = formatDateTime(new Date(), 'YYYY-MM-DD') + ' 00:00:00'
+    // const endTime = formatDateTime(new Date(), 'YYYY-MM-DD') + ' 23:59:59'
+    //
+    // this.queryData.time = [startTime, endTime]
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
     this.getDataListFun(1); // 获取列表
@@ -272,12 +287,21 @@ export default {
     // 获取列表
     getDataListFun(num) {
       this.loading = true;
+      const startTime = this.queryData.time && this.queryData.time.length ? zonedTimeToTimestamp(formatDateTime(new Date(this.queryData.time[0]))) / 1000 : ''
+
+      const endTime = this.queryData.time && this.queryData.time.length ? zonedTimeToTimestamp(formatDateTime(new Date(this.queryData.time[1]))) / 1000 : ''
+
       const params = {
         page: num || this.queryData.page,
         limit: this.queryData.limit,
         name: this.queryData.name,
         status: Number(this.queryData.status) || -1,
       }
+      if (startTime && endTime) {
+        params.start_time = startTime
+        params.end_time = endTime
+      }
+
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
@@ -456,6 +480,7 @@ export default {
         total: 0,
         name: '',
         status: '',
+        time: [],
         pageOption: resetPage(),
       }
       this.getDataListFun(1)
