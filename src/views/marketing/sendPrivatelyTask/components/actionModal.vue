@@ -258,7 +258,7 @@ export default {
         name: '',
         group_id: [],
         data_pack_id: '',
-        send_type: 1,
+        send_type: 2,
         send_num: 90,
         min_time: 10,
         max_time: 15,
@@ -295,9 +295,7 @@ export default {
       this.modal.type = type
       this.modal.show = true
       this.$nextTick(() => {
-        if (form) {
-          console.log('form', form)
-        }
+        this.radioGroup(this.formData.send_type)
         this.$refs['refFormData'].resetFields()
       })
     },
@@ -424,7 +422,7 @@ export default {
       }
       getdatapacklist(params).then(res => {
         if (res.msg === 'success') {
-          this.datapackList = res.data.list
+          this.datapackList = res.data.list.filter(item => { return item.residue_num > 0 })
         }
       })
     },

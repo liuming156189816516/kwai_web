@@ -626,8 +626,8 @@ export default {
           seat_type: 1,
           staffCheck: [],
           deviceIdText: '',
-          min_hour: '', // 最小
-          max_hour: '', // 最大
+          min_hour: '20', // 最小
+          max_hour: '40', // 最大
         },
         ipRules: {
           use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
