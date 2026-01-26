@@ -157,12 +157,12 @@
             <template v-if="stepsActive==1">
               <el-col :span="12">
                 <el-form-item prop="group_id">
-                  <div class="label_radius_title">{{ $t('sys_c053') }}</div>
+                  <div class="label_radius_title">选择分组</div>
                   <el-select
                     v-model="accountForm.group_id"
                     clearable
                     filterable
-                    :placeholder="$t('sys_c053')"
+                    placeholder="选择分组"
                     style="width:100%;"
                   >
                     <el-option v-for="item in groupOption" :key="item.id" :label="item.name" :value="item.id" />
@@ -200,7 +200,7 @@
               <el-col :span="24">
                 <el-form-item>
                   <div class="label_radius_title">{{ $t('sys_c058') }}</div>
-                  <div>{{ $t('sys_c114') }}</div>
+                  <div>点击下方文字按钮，下载模板，并按照规定格式填写数据，且文件大小不得超过50MB</div>
                   <div class="submit_btn">
                     <el-button v-if="accountForm.group_id" class="custom_file1" style="margin-top: 0;">{{ $t('sys_c059') }}
                       <input id="uploadFile" ref="uploadclear" type="file" title=" " @change="checkDataIsUse">
@@ -215,8 +215,8 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item prop="file_name">
-                  <div class="label_title">{{ $t('sys_l062') }}</div>
+                <el-form-item prop="remark">
+                  <div class="label_title">备注</div>
                   <el-input
                     v-model="accountForm.remark"
                     type="text"
@@ -442,6 +442,7 @@ export default {
     accountRules() {
       return {
         group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+        remark: [{ required: true, message: '请输入', trigger: 'change' }],
         export_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
       }
     },
