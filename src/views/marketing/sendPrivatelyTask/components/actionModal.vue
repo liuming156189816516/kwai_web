@@ -22,7 +22,13 @@
           <el-row :gutter="20">
             <el-col :span="22">
               <el-form-item label="任务名称：" prop="name">
-                <el-input v-model="formData.name" placeholder="请输入" maxlength="20" show-word-limit @input="changeInput" />
+                <el-input
+                  v-model="formData.name"
+                  maxlength="20"
+                  placeholder="请输入"
+                  show-word-limit
+                  @input="changeInput"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -36,8 +42,8 @@
                   <el-form-item label="选择分组：" label-width="100px" prop="group_id" style="margin-right: 20px;">
                     <el-select
                       v-model="formData.group_id"
-                      placeholder="请选择"
                       collapse-tags
+                      placeholder="请选择"
                       style="margin-left: 20px;"
                       @change="changeAccountNum"
                     >
@@ -59,7 +65,7 @@
           <el-row :gutter="20">
             <el-col :span="22">
               <el-form-item label="选择数据：" prop="data_pack_id">
-                <el-radio :value="1" :label="1">粉丝数据</el-radio>
+                <el-radio :label="1" :value="1">粉丝数据</el-radio>
                 <el-select v-model="formData.data_pack_id" placeholder="请选择" style="margin-top: 10px">
                   <el-option
                     v-for="item in datapackList"
@@ -166,13 +172,13 @@
                   >{{ item }}
                   </el-button>
                   <el-table
-                    row-key="id"
-                    show-body-overflow="title"
-                    element-loading-spinner="el-icon-loading"
                     :cell-style="{ textAlign: 'center' }"
                     :data="formData.material_list"
                     :header-cell-style="{ color: '#909399', textAlign: 'center' }"
+                    element-loading-spinner="el-icon-loading"
                     max-height="300"
+                    row-key="id"
+                    show-body-overflow="title"
                     style="width: 100%"
                   >
                     <el-table-column label="序号" type="index" width="60" />
@@ -239,6 +245,7 @@
 import { deepClone } from '@/utils';
 import { getUserListApi } from '../api';
 import { getdatapacklist } from '@/api/datamanage'
+
 export default {
   name: 'ActionModal',
   props: {
@@ -256,10 +263,10 @@ export default {
       },
       formData: {
         name: '',
-        group_id: [],
+        group_id: '',
         data_pack_id: '',
         send_type: 2,
-        send_num: 90,
+        send_num: 5,
         min_time: 10,
         max_time: 15,
         material_list: [],
@@ -297,6 +304,31 @@ export default {
       this.$nextTick(() => {
         this.radioGroup(this.formData.send_type)
         this.$refs['refFormData'].resetFields()
+        if (form) {
+          const data = deepClone(JSON.parse(form.conf_str))
+          this.formData.send_type = data.send_type
+          this.formData.send_num = data.send_num
+          this.formData.max_time = data.max_time
+          this.formData.min_time = data.min_time
+          this.formData.replace_num = data.replace_num
+          this.formData.material_list = data.material_list.map(item => {
+            return { content: item }
+          })
+          this.$forceUpdate()
+        } else {
+          this.formData = {
+            name: '',
+            group_id: '',
+            data_pack_id: '',
+            send_type: 2,
+            send_num: 5,
+            min_time: 10,
+            max_time: 15,
+            material_list: [],
+            replace_num: 6,
+          }
+          this.$forceUpdate()
+        }
       })
     },
     // 重置
@@ -311,7 +343,7 @@ export default {
       switch (val) {
         case 1:
           this.formData.send_num = 90
-              break;
+          break;
         case 2:
           this.formData.send_num = 5
           break;
@@ -322,26 +354,30 @@ export default {
     },
     // 选择账号分组
     changeAccountNum() {
-      const numbers = this.accountGroupList.filter(item => { return item.group_id === this.formData.group_id });
+      const numbers = this.accountGroupList.filter(item => {
+        return item.group_id === this.formData.group_id
+      });
       this.totalNum = numbers.reduce((sum, item) => sum + Number(item.online_num || 0), 0);
     },
     // 关闭弹窗
     closeModal() {
-      this.modal.show = false
-      this.modal.loading = false
       this.modal.type = ''
       this.$refs['refFormData'].resetFields()
       this.formData = {
         name: '',
-        group_id: [],
+        group_id: '',
         data_pack_id: '',
-        send_type: 1,
-        send_num: 115,
+        send_type: 2,
+        send_num: 5,
         min_time: 10,
         max_time: 15,
-        material_list: [],
         replace_num: 6,
       }
+      this.formData.material_list = []
+      this.modal.show = false
+      this.modal.loading = false
+      console.log('关闭弹窗', this.formData)
+      this.$emit('closeModal')
     },
     // 打开 话术弹窗
     openRhetoricModal(form, index) {
@@ -349,15 +385,15 @@ export default {
       this.rhetoricModal.show = true
     },
     // 编辑 话术弹窗
-    editContentFun(form,index) {
+    editContentFun(form, index) {
       this.rhetoricModal.show = true
       this.rhetoricModal.type = 'edit'
       this.rhetoricModal.formData = deepClone(form)
       this.rhetoricModal.tableIndex = index
     },
     // 删除 话术
-    delContentFun(form,index) {
-      this.formData.material_list.splice(index,1)
+    delContentFun(form, index) {
+      this.formData.material_list.splice(index, 1)
     },
     // 提交 话术
     submitRhetoricModal() {
@@ -365,18 +401,17 @@ export default {
         this.$message.warning('请输入内容')
         return false
       }
-        console.log('this.rhetoricModal.formData',this.rhetoricModal.formData)
       const type = this.rhetoricModal.type
       const index = this.rhetoricModal.tableIndex
-        const formData = deepClone(this.rhetoricModal.formData)
-        if (type === 'add') {
-          this.formData.material_list.push(formData)
-        } else if (type === 'edit') {
-          this.formData.material_list[index].content = formData.content
-        }
-     setTimeout(() => {
-       this.closeRhetoricModal()
-     },150)
+      const formData = deepClone(this.rhetoricModal.formData)
+      if (type === 'add') {
+        this.formData.material_list.push(formData)
+      } else if (type === 'edit') {
+        this.formData.material_list[index].content = formData.content
+      }
+      setTimeout(() => {
+        this.closeRhetoricModal()
+      }, 150)
     },
     // 关闭 话术弹窗
     closeRhetoricModal() {
@@ -397,8 +432,10 @@ export default {
             type: this.modal.type,
             formData: deepClone(this.formData)
           }
-          data.formData.material_list = this.formData.material_list.map(item => { return item.content })
-          this.$emit('saveData',data)
+          data.formData.material_list = this.formData.material_list.map(item => {
+            return item.content
+          })
+          this.$emit('saveData', data)
         } else {
           this.modal.loading = false
           this.$message.error('提交失败！')
@@ -422,7 +459,9 @@ export default {
       }
       getdatapacklist(params).then(res => {
         if (res.msg === 'success') {
-          this.datapackList = res.data.list.filter(item => { return item.residue_num > 0 })
+          this.datapackList = res.data.list.filter(item => {
+            return item.residue_num > 0
+          })
         }
       })
     },

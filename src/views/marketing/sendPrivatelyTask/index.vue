@@ -9,12 +9,12 @@
         </el-form-item>
         <el-form-item>
           <el-date-picker
-              v-model="queryData.time"
-              end-placeholder="结束日期"
-              range-separator="至"
-              start-placeholder="开始日期"
-              style="width: 380px"
-              type="datetimerange"
+            v-model="queryData.time"
+            end-placeholder="结束日期"
+            range-separator="至"
+            start-placeholder="开始日期"
+            style="width: 380px"
+            type="datetimerange"
           />
         </el-form-item>
         <el-form-item>
@@ -117,9 +117,10 @@
           label="操作"
           prop="operation"
           show-overflow-tooltip
-          width="180"
+          width="240"
         >
           <template slot-scope="scope">
+            <el-button size="small" type="primary" @click.stop="quickSendFun(scope.row,)">快速私发</el-button>
             <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">配置</el-button>
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">详情</el-button>
           </template>
@@ -141,7 +142,7 @@
     </div>
 
     <!-- 新建 -->
-    <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" />
+    <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" @closeModal="closeActionModal" />
     <!-- 新建 -->
     <detailList ref="refDetailList" :modal-height:="cliHeight" />
     <!-- JSON 配置 -->
@@ -193,7 +194,7 @@ import {
   getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
 } from './api';
 import { resetPage, successTips, getLabelByVal,zonedTimeToTimestamp } from '@/utils';
-import { formatTimestamp ,formatDecimal ,formatDateTime} from '@/filters'
+import { formatTimestamp ,formatDecimal ,formatDateTime } from '@/filters'
 import actionModal from './components/actionModal'
 import detailList from './components/detailList'
 export default {
@@ -210,7 +211,7 @@ export default {
         total: 0,
         name: '',
         status: '',
-        time:[],
+        time: [],
         pageOption: resetPage(),
       },
       formData: {},
@@ -261,13 +262,16 @@ export default {
         value: null
       },
       showSumNum: [8, 9,10],
+      quickSendData: {
+        state: false,
+        form: null
+      }
 
     }
   },
   mounted() {
     // const startTime = formatDateTime(new Date(), 'YYYY-MM-DD') + ' 00:00:00'
     // const endTime = formatDateTime(new Date(), 'YYYY-MM-DD') + ' 23:59:59'
-    //
     // this.queryData.time = [startTime, endTime]
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
@@ -322,14 +326,22 @@ export default {
     },
     // 新建
     addOpenFun() {
-      this.$refs.refActionModal.open(null,'add')
+      if (this.quickSendData.state) {
+        this.$refs.refActionModal.open(this.quickSendData.form,'add')
+      } else {
+        this.$refs.refActionModal.open(null,'add')
+      }
     },
     // 保存
     saveData(data) {
-      console.log('saveData',data)
       if (data.type === 'add') {
         this.addDataFun(data.formData)
       }
+    },
+    // 关闭新建
+    closeActionModal() {
+      this.quickSendData.state = false
+      this.quickSendData.form = null
     },
     // 新建
     addDataFun(form) {
@@ -338,6 +350,8 @@ export default {
           this.$message.success('新建成功！')
           this.$refs.refActionModal.closeModal()
           this.getDataListFun(1)
+          this.quickSendData.state = false
+          this.quickSendData.form = null
         }
       })
     },
@@ -402,6 +416,11 @@ export default {
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
       });
+    },
+    // 快速私法
+    quickSendFun(item) {
+      this.quickSendData.state = true
+      this.quickSendData.form = item
     },
     // 打开配置
     openConfigModal(row,kay) {
