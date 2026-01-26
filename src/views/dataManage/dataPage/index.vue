@@ -25,11 +25,11 @@
           :cell-style="{ textAlign: 'center' }"
           :data="dataList"
           :header-cell-style="{ color: '#909399', textAlign: 'center' }"
+          :height="cliHeight"
           :summary-method="getSummaries"
           border
           element-loading-background="rgba(255, 255, 255,1)"
           element-loading-spinner="el-icon-loading"
-          :height="cliHeight"
           show-summary
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -100,11 +100,16 @@
               </el-button>
               <el-button :border="false" :disabled="checkIdArry.length>0" size="small" style="padding: 0;" @click.stop>
                 <el-dropdown @command="(command)=>{handleCommand(scope.row,command)}">
-                  <el-button :disabled="checkIdArry.length>0" size="small" type="primary">{{ $t('sys_c079') }}
+                  <el-button :disabled="checkIdArry.length>0" size="small" type="primary">更多
                     <i class="el-icon-arrow-down el-icon--right" />
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="(item,idx) in moreOption" v-show="item" :key="idx" :command="idx">
+                    <el-dropdown-item
+                      v-for="(item,idx) in moreOption"
+                      v-show="item"
+                      :key="idx"
+                      :command="{title:item,index:idx}"
+                    >
                       {{ item }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -230,25 +235,6 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog :close-on-click-modal="false" :title="$t('sys_q125')" :visible.sync="downModel" center width="450px">
-      <el-form ref="dataForm" :model="dataForm" :rules="dataRules" label-width="100px" size="small">
-        <el-form-item :label="$t('sys_q126') + ':'" prop="ver_pwd">
-          <el-input
-            v-model="dataForm.ver_pwd"
-            :placeholder="$t('sys_mat061',{value:$t('sys_q126')})"
-            clearable
-            style="width: 100%;"
-          />
-        </el-form-item>
-        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
-          <el-button @click="downModel = false">{{ $t('sys_c023') }}</el-button>
-          <el-button :loading="dataForm.downLoading" type="primary" @click="submitDownBtn('dataForm')">{{
-            $t('sys_c024')
-          }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -301,6 +287,7 @@ export default {
         ver_pwd: '',
         data_id: '',
         data_type: null,
+        title: null,
         downLoading: false,
       },
       timer: null,
@@ -330,8 +317,9 @@ export default {
     stopOptions() {
       return ['', this.$t('sys_c025'), this.$t('sys_c026')]
     },
+    // 更多
     moreOption() {
-      return ['', this.$t('sys_mat035'), this.$t('sys_mat036'), this.$t('sys_mat105')]
+      return ['', '导出全部数据', '导出剩余数据', '导出异常数据']
     }
   },
   watch: {
@@ -563,34 +551,41 @@ export default {
         that.$message({ type: 'info', message: that.$t('sys_c048') });
       })
     },
-    handleCommand(row, idx) {
-      this.dataForm.data_type = idx;
-      this.dataForm.data_id = row.id;
-      this.downModel = true;
-      this.$nextTick(() => {
-        this.$refs.dataForm.resetFields();
+    // 更多
+    handleCommand(row, item) {
+      console.log('row', row)
+      console.log('item', item)
+      // this.dataForm.title = item.title
+      // this.dataForm.data_type = item.index;
+      // this.dataForm.data_id = row.id;
+      this.$confirm(`确认${item.title}吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: function(action, instance, done) {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            dooutputdata({
+              type: item.index,
+              id: row.id,
+            }).then(res => {
+              if (res.msg === 'success') {
+                instance.confirmButtonLoading = false;
+                window.location.href = res.data.url;
+                successTips(this)
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
-    submitDownBtn(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.dataForm.downLoading = true;
-          dooutputdata({
-            type: this.dataForm.data_type,
-            id: this.dataForm.data_id,
-            two_pwd: this.dataForm.ver_pwd
-          }).then(res => {
-            this.dataForm.downLoading = false;
-            if (res.code !== 0) return;
-            this.downModel = false;
-            window.location.href = res.data.url;
-          })
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
+
     // 窗口高度
     setFullHeight() {
       this.cliHeight = document.documentElement.clientHeight - 260;
