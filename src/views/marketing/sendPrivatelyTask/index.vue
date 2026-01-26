@@ -142,7 +142,7 @@
     </div>
 
     <!-- 新建 -->
-    <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" @closeModal="closeActionModal" />
+    <actionModal ref="refActionModal" :modal-height:="cliHeight" @saveData="saveData" />
     <!-- 新建 -->
     <detailList ref="refDetailList" :modal-height:="cliHeight" />
     <!-- JSON 配置 -->
@@ -262,10 +262,7 @@ export default {
         value: null
       },
       showSumNum: [8, 9,10],
-      quickSendData: {
-        state: false,
-        form: null
-      }
+
 
     }
   },
@@ -326,22 +323,13 @@ export default {
     },
     // 新建
     addOpenFun() {
-      if (this.quickSendData.state) {
-        this.$refs.refActionModal.open(this.quickSendData.form,'add')
-      } else {
-        this.$refs.refActionModal.open(null,'add')
-      }
+      this.$refs.refActionModal.open(null,'add')
     },
     // 保存
     saveData(data) {
       if (data.type === 'add') {
         this.addDataFun(data.formData)
       }
-    },
-    // 关闭新建
-    closeActionModal() {
-      this.quickSendData.state = false
-      this.quickSendData.form = null
     },
     // 新建
     addDataFun(form) {
@@ -350,8 +338,6 @@ export default {
           this.$message.success('新建成功！')
           this.$refs.refActionModal.closeModal()
           this.getDataListFun(1)
-          this.quickSendData.state = false
-          this.quickSendData.form = null
         }
       })
     },
@@ -419,8 +405,7 @@ export default {
     },
     // 快速私法
     quickSendFun(item) {
-      this.quickSendData.state = true
-      this.quickSendData.form = item
+      this.$refs.refActionModal.open(item,'add')
     },
     // 打开配置
     openConfigModal(row,kay) {

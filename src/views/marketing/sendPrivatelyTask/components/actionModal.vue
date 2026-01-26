@@ -376,8 +376,6 @@ export default {
       this.formData.material_list = []
       this.modal.show = false
       this.modal.loading = false
-      console.log('关闭弹窗', this.formData)
-      this.$emit('closeModal')
     },
     // 打开 话术弹窗
     openRhetoricModal(form, index) {
