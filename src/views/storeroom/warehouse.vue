@@ -202,14 +202,12 @@
                   <div class="label_radius_title">{{ $t('sys_c058') }}</div>
                   <div>点击下方文字按钮，下载模板，并按照规定格式填写数据，且文件大小不得超过50MB</div>
                   <div class="submit_btn">
-                    <el-button v-if="accountForm.group_id" class="custom_file1" style="margin-top: 0;">{{ $t('sys_c059') }}
+                    <el-button v-if="accountForm.group_id&&accountForm.remark" class="custom_file1" style="margin-top: 0;">点击上传
                       <input id="uploadFile" ref="uploadclear" type="file" title=" " @change="checkDataIsUse">
                     </el-button>
-                    <el-button v-else class="custom_file1" style="margin-top: 0;" @click="submitWayBtn('accountForm')">
-                      {{ $t('sys_c059') }}
-                    </el-button>
+                    <el-button v-else class="custom_file1" style="margin-top: 0;" @click="submitWayBtn('accountForm')">点击上传</el-button>
                     <span class="export_tips" @click="downLoadTemp">
-                      <i class="el-icon-download" />{{ $t('sys_l066') }}
+                      <i class="el-icon-download" />下载模板
                     </span>
                   </div>
                 </el-form-item>
