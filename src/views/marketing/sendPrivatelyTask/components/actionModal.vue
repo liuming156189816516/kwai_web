@@ -294,13 +294,14 @@ export default {
     }
   },
   mounted() {
-    this.getUserListFun()
-    this.getDataPackListFun()
+
   },
   methods: {
     open(form, type) {
       this.modal.type = type
       this.modal.show = true
+      this.getUserListFun()
+      this.getDataPackListFun()
       this.$nextTick(() => {
         this.radioGroup(this.formData.send_type)
         this.$refs['refFormData'].resetFields()

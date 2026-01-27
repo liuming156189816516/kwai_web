@@ -262,8 +262,6 @@ export default {
         value: null
       },
       showSumNum: [8, 9,10],
-
-
     }
   },
   mounted() {

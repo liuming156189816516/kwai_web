@@ -198,6 +198,18 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
+                <el-form-item prop="remark">
+                  <div class="label_title">备注</div>
+                  <el-input
+                      v-model="accountForm.remark"
+                      type="text"
+                      :placeholder="$t('sys_c037')"
+                      maxlength="20"
+                      show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
                 <el-form-item>
                   <div class="label_radius_title">{{ $t('sys_c058') }}</div>
                   <div>点击下方文字按钮，下载模板，并按照规定格式填写数据，且文件大小不得超过50MB</div>
@@ -210,18 +222,6 @@
                       <i class="el-icon-download" />下载模板
                     </span>
                   </div>
-                </el-form-item>
-              </el-col>
-              <el-col>
-                <el-form-item prop="remark">
-                  <div class="label_title">备注</div>
-                  <el-input
-                    v-model="accountForm.remark"
-                    type="text"
-                    :placeholder="$t('sys_c037')"
-                    maxlength="20"
-                    show-word-limit
-                  />
                 </el-form-item>
               </el-col>
             </template>
