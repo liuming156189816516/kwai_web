@@ -277,7 +277,7 @@ export default {
         name: [{ required: true, message: '请选择', trigger: 'blur' }],
         group_id: [{ required: true, message: '请选择', trigger: 'change' }],
         data_pack_id: [{ required: true, message: '请选择', trigger: 'change' }],
-        material_list: [{ required: true, message: '请添加话术', trigger: 'change' }],
+        material_list: [{ required: true, message: '请添加话术', trigger: 'change' ,type: 'array', }],
         send_type: [{ required: true, message: '请选择', trigger: 'change' }],
       },
       btnOption: ['添加素材'],
@@ -304,20 +304,22 @@ export default {
       this.getDataPackListFun()
       this.$nextTick(() => {
         this.radioGroup(this.formData.send_type)
-        this.$refs['refFormData'].resetFields()
+        this.$refs.refFormData.clearValidate()
         if (form) {
           const data = deepClone(JSON.parse(form.conf_str))
-          this.formData.send_type = data.send_type
-          this.formData.send_num = data.send_num
-          this.formData.max_time = data.max_time
-          this.formData.min_time = data.min_time
-          this.formData.replace_num = data.replace_num
-          this.formData.material_list = data.material_list.map(item => {
-            return { content: item }
+          Object.assign(this.formData, {
+            send_type: data.send_type,
+            send_num: data.send_num,
+            min_time: data.min_time,
+            max_time: data.max_time,
+            replace_num: data.replace_num,
+            material_list: data.material_list.map(item => ({ content: item }))
           })
-          this.$forceUpdate()
+          this.$nextTick(() => {
+            this.$refs.refFormData.validateField('material_list')
+          })
         } else {
-          this.formData = {
+          Object.assign(this.formData, {
             name: '',
             group_id: '',
             data_pack_id: '',
@@ -325,10 +327,9 @@ export default {
             send_num: 5,
             min_time: 10,
             max_time: 15,
-            material_list: [],
             replace_num: 6,
-          }
-          this.$forceUpdate()
+            material_list: []
+          })
         }
       })
     },
