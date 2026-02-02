@@ -5,10 +5,12 @@
         <el-input v-model="userName" size="small" clearable :placeholder="$t('sys_c001')" />
       </el-form-item>
       <el-form-item>
-        <el-button size="small" icon="el-icon-search" type="primary" @click="initAccount(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button size="small" icon="el-icon-search" type="primary" @click="initAccount(null)">查询</el-button>
+        <el-button size="small" icon="el-icon-refresh-right" @click="restTableQueryBtn">重置</el-button>
       </el-form-item>
       <el-form-item class="el-item-right">
         <el-button size="small" type="primary" @click="addUser(0,1)">{{ $t('sys_c011') }}</el-button>
+
       </el-form-item>
     </el-form>
 
@@ -162,7 +164,7 @@ export default {
         country_code: '',
         sureTime: '',
         status: 1,
-        remark:''
+        remark: ''
       },
       countryList: [
         { label: '巴西',value: 'BR' },
@@ -205,7 +207,6 @@ export default {
     this.initAccount()
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
-
   },
   methods: {
     setPageSize(val) {
@@ -243,6 +244,14 @@ export default {
         this.total = res.data.total;
         this.userList = res.data.list || [];
       })
+    },
+    // 重置
+    restTableQueryBtn() {
+      this.offest = 1
+      this.limit = 10
+      this.status = ''
+      this.userName = ''
+      this.initAccount(1)
     },
     baseHandle(row,type) {
 			const that = this;
@@ -294,7 +303,7 @@ export default {
             valid_time: Date.parse(this.userForm.sureTime) / 1000,
             country_code: this.userForm.country_code,
             status: this.userForm.status,
-            remark:this.userForm.remark,
+            remark: this.userForm.remark,
           }
           this.userForm.type === 0 ? delete params.uid : '';
           this.isLoading = true;

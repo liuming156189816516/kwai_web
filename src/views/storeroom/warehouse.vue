@@ -14,7 +14,8 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="initDatalist(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="initDatalist(null)">查询</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restQueryBtn">重置</el-button>
       </el-form-item>
       <el-form-item class="el-item-right">
         <el-button type="primary" :disabled="checkIdArry.length==0" @click="batchDel">{{ $t('sys_l048') }}</el-button>
@@ -201,11 +202,11 @@
                 <el-form-item prop="remark">
                   <div class="label_title">备注</div>
                   <el-input
-                      v-model="accountForm.remark"
-                      type="text"
-                      :placeholder="$t('sys_c037')"
-                      maxlength="20"
-                      show-word-limit
+                    v-model="accountForm.remark"
+                    type="text"
+                    :placeholder="$t('sys_c037')"
+                    maxlength="20"
+                    show-word-limit
                   />
                 </el-form-item>
               </el-col>
@@ -514,8 +515,8 @@ export default {
     },
     initDatalist(num) {
       this.loading = true;
-      const sTime = this.model1.ipCtime;
-      this.model1.page = num || this.model1.page;
+      const sTime = this.model1.ipCtime
+      this.model1.page = num || this.model1.page
       const params = {
         page: this.model1.page,
         limit: this.model1.limit,
@@ -532,6 +533,18 @@ export default {
           tableBodyWrapper.scrollTop = 0
         })
       })
+    },
+    // 重置
+    restQueryBtn() {
+      this.model1 = {
+        page: 1,
+        limit: 10,
+        total: 0,
+        ipCtime: '',
+        file_time: '',
+        file_name: '',
+      }
+      this.initDatalist(1)
     },
     async initGroup() {
       const { data } = await getaccountgrouplist({ page: 1, limit: 100 });

@@ -10,7 +10,9 @@
         <el-input v-model="queryData.task_name" :placeholder="$t('sys_mat061',{value:$t('sys_mat027')})" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" type="primary" @click="initDatalist(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="initDatalist(null)">查询</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restTableQueryBtn">重置</el-button>
+
       </el-form-item>
     </el-form>
     <div class="group_main">
@@ -413,6 +415,16 @@ export default {
         })
       })
     },
+    // 重置
+    restTableQueryBtn() {
+      this.queryData = {
+        page: 1,
+            limit: 10,
+            total: 0,
+            task_name: ''
+      }
+      this.initDatalist(1)
+    },
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
@@ -553,11 +565,6 @@ export default {
     },
     // 更多
     handleCommand(row, item) {
-      console.log('row', row)
-      console.log('item', item)
-      // this.dataForm.title = item.title
-      // this.dataForm.data_type = item.index;
-      // this.dataForm.data_id = row.id;
       this.$confirm(`确认${item.title}吗？`, '提示', {
         type: 'warning',
         confirmButtonText: '确定',

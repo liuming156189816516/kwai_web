@@ -43,18 +43,18 @@
           <el-select v-model="model1.selectIp" class="select_ele" :placeholder="$t('sys_c052')">
             <el-option v-for="(item, idx) in ipSelectList" :key="idx" :label="item" :value="idx" />
           </el-select>
-          <el-input @input="changeInput" v-model="model1.ip" class="input_ele" :placeholder="$t('sys_c060')" />
+          <el-input v-model="model1.ip" class="input_ele" :placeholder="$t('sys_c060')" @input="changeInput" />
         </div>
       </el-form-item>
       <el-form-item>
         <el-date-picker v-model="model1.ipCtime" type="daterange" :range-separator="$t('sys_c108')" :start-placeholder="$t('sys_c109')" :end-placeholder="$t('sys_c110')" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="initiplist(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="initiplist(null)">查询</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restTableQueryBtn">重置</el-button>
+
       </el-form-item>
       <el-form-item class="el-item-right">
-        <!-- <el-button type="primary">套餐IP</el-button> -->
-        <!-- <el-button type="success" @click="showSetIp(0)">设置登录IP</el-button> -->
         <el-dropdown trigger="click" @command="handleCommand">
           <el-button type="warning"> {{ $t('sys_g018') }}
             <i class="el-icon-arrow-down el-icon--right" />
@@ -66,7 +66,6 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <el-button type="info" @click="showSetIp(0)">IP冻结规则</el-button> -->
         <el-button type="primary" style="margin-left: 10px;" @click="changeIpBtn(0,0)">{{ $t('sys_mat045') }}</el-button>
       </el-form-item>
     </el-form>
@@ -78,7 +77,7 @@
             <div class="group_icon">
               <el-popover v-model="addVisible" placement="top" width="230">
                 <p>
-                  <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                  <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" @input="changeInput" />
                 </p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="addVisible = false">{{ $t('sys_c023') }}</el-button>
@@ -107,7 +106,7 @@
                   <div class="group_icon">
                     <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
-                        <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                        <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" @input="changeInput" />
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{ $t('sys_c023') }}</el-button>
@@ -320,7 +319,7 @@
                 <el-form-item label-width="0" style="margin-left: 22px;">
                   <el-popover v-model="visible" placement="top" width="260">
                     <p>
-                      <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                      <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" @input="changeInput" />
                     </p>
                     <div style="text-align: right; margin: 0">
                       <el-button size="mini" type="text" @click="visible = false">{{ $t('sys_c023') }}</el-button>
@@ -358,7 +357,7 @@
                   <div style="display: flex;font-size: 12px;line-height: 16px;">
                     <span style="display: flex;align-items: center;">单个ip最多登录</span>
                     <span style="margin: 0 5px;">
-                      <el-input @input="changeInput"-number v-model="ipForm.ipLoginNum" :disabled="ipForm.iptype[1]==2" type="number" :min="1" label="描述文字" style="width: 120px;" />
+                      <el-input v-model="ipForm.ipLoginNum" -number@input="changeInput" :disabled="ipForm.iptype[1]==2" type="number" :min="1" label="描述文字" style="width: 120px;" />
                     </span>
                     <span style="display: flex;align-items: center;">个账号,如果ip为动态时,分配次数是根据账号而定,例如10个账号登录那么就分配10次</span>
                   </div>
@@ -401,7 +400,7 @@
           <el-form-item :label="$t('sys_l051') + ':'" prop="allot_num" label-width="140px">
             <div style="display: flex;font-size: 12px; line-height: 20px;align-items: center;">
               <span>单个ip最多登录</span>
-              <el-input @input="changeInput" v-model="ipForm.allot_num" size="small" style="width: 120px;margin: 0 4px;" show-word-limit placeholder="请输入" />
+              <el-input v-model="ipForm.allot_num" size="small" style="width: 120px;margin: 0 4px;" show-word-limit placeholder="请输入" @input="changeInput" />
               <span>个账号</span>
             </div>
           </el-form-item>
@@ -427,7 +426,7 @@
         </el-form-item>
         <template v-if="setIpType==11">
           <el-form-item prop="remock_text" label-width="0">
-            <el-input @input="changeInput" v-model="ipForm.remock_text" type="textarea" :placeholder="$t('sys_mat021')" size="small" :rows="6" maxlength="50" show-word-limit />
+            <el-input v-model="ipForm.remock_text" type="textarea" :placeholder="$t('sys_mat021')" size="small" :rows="6" maxlength="50" show-word-limit @input="changeInput" />
           </el-form-item>
         </template>
 
@@ -608,7 +607,7 @@ export default {
         proxy_ip: ''
       },
       ipDetailList: [],
-      cliHeight:0
+      cliHeight: 0
     }
   },
   computed: {
@@ -621,7 +620,6 @@ export default {
         ip_file: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         allot_num: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
-        group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
       }
     },
@@ -708,7 +706,7 @@ export default {
   },
   watch: {
     ipModel(val) {
-      if (val == false) {
+      if (val === false) {
         this.ipForm.iptype = '';
         this.ipForm.group_id = '';
         this.ipForm.ipLoginNum = '';
@@ -750,13 +748,13 @@ export default {
       tableCell.toggleRowSelection([{ row: row,selected: true }]);
     },
     handleNewwork(row,idx) {
-      if (idx == 1) {
+      if (idx === 1) {
         this.model1.status = row;
-      } else if (idx == 2) {
+      } else if (idx === 2) {
         this.model1.ip_category = row;
-      } else if (idx == 3) {
+      } else if (idx === 3) {
         this.model1.expire_status = row;
-      } else if (idx == 4) {
+      } else if (idx === 4) {
         this.model1.disable_status = row;
       }
       this.initiplist();
@@ -770,7 +768,7 @@ export default {
     },
     sorthandle({ column, prop, order }) {
       if (order) {
-        this.model1.sort = order == 'ascending' ? 'user_num' : '-user_num';
+        this.model1.sort = order === 'ascending' ? 'user_num' : '-user_num';
       } else {
         this.model1.sort = '';
       }
@@ -826,6 +824,23 @@ export default {
           tableBodyWrapper.scrollTop = 0
         })
       })
+    },
+    // 重置列表
+    restTableQueryBtn() {
+      this.model1 = {
+        ip: '',
+        page: 1,
+        limit: 10,
+        total: 0,
+        ipCtime: '',
+        selectIp: 0,
+        status: '',
+        sort: '',
+        ip_category: '',
+        expire_status: '',
+        disable_status: '',
+      }
+      this.initiplist(1)
     },
     restQueryBtn() {
       this.model2.ipTime = [];
@@ -900,7 +915,7 @@ export default {
     editGroup(row, idx) {
       this.type = idx;
       this.group_name = '';
-      if (idx == 1) return;
+      if (idx === 1) return;
       this.groupForm.id = row.id;
       this.group_name = row.name;
     },
@@ -911,7 +926,7 @@ export default {
         type: Number(this.cardAcyive),
       }
       this.groupLoading = true;
-      this.type == 2 ? params.id = this.groupForm.id : '';
+      this.type === 2 ? params.id = this.groupForm.id : '';
       const newBank = await doipgroup(params);
       this.groupLoading = false;
       if (newBank.code !== 0) return;
@@ -921,7 +936,7 @@ export default {
       successTips(this)
       if (title) {
         setTimeout(() => {
-          this.ipForm.group_id = this.ipGroupList.filter(item => item.name == this.group_name)[0].id;
+          this.ipForm.group_id = this.ipGroupList.filter(item => item.name === this.group_name)[0].id;
         },600)
       }
     },
@@ -932,7 +947,7 @@ export default {
       this.groupForm.group_id = '';
       successTips(this)
       for (let k = 0; k < this.ipGroupList.length; k++) {
-        if (this.ipGroupList[k].id == row.id) {
+        if (this.ipGroupList[k].id === row.id) {
           this.ipGroupList.splice(k, 1)
         }
       }
@@ -959,11 +974,11 @@ export default {
       const formData = new FormData();
       formData.append('file', files);
       formData.append('ptype', this.ipForm.iptype[1]);
-      this.stepsActive = 2,
+      this.stepsActive = 2
       this.ipModelType = 2;
       this.$refs.uploadclear.value = null;
       checkfile(formData).then(res => {
-        if (res.code != 0) return;
+        if (res.code !== 0) return;
         // this.ipModelType=2;
         this.errIpUrl = res.data.url;
         this.fail_number = res.data.fail_number;
@@ -980,19 +995,19 @@ export default {
           country: this.ipForm.country,
           group_id: this.ipForm.group_id,
           allot_num: this.ipForm.ipLoginNum,
-          ip_type: this.ipForm.iptype[2] == 4 ? 1 : 2,
+          ip_type: this.ipForm.iptype[2] === 4 ? 1 : 2,
           ip_category: this.ipForm.iptype[1],
           success_list: this.success_list,
           expire_time: Date.parse(this.$baseFun.resetTime(this.ipForm.ip_time)) / 1000
         }
         this.startPercent();
         const result = await addip(params);
-        if (result.code != 0) return;
+        if (result.code !== 0) return;
         this.initipGroup();
         this.initiplist();
         this.uploadloading = false;
         this.ipModelType = 3;
-        this.stepsActive = 3,
+        this.stepsActive = 3
         this.percentage = 0;
         this.fail_number = result.data.fail_number;
         this.success_number = result.data.success_number;
@@ -1014,21 +1029,21 @@ export default {
         },500)
     },
     restUpload() {
-      this.stepsActive = 1,
+      this.stepsActive = 1
       this.ipModelType = 1;
     },
     submitIpBtn(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ipModelType == 0) {
+          if (this.ipModelType === 0) {
             this.initCountry();
-            this.stepsActive = 1,
+            this.stepsActive = 1
             this.ipModelType = 1;
-            if (this.ipForm.iptype[1] == 1) {
+            if (this.ipForm.iptype[1] === 1) {
               this.ipModdelTitle = 'WS-' + this.ipClassOptions[this.ipForm.iptype[1]] + '-' + this.ipNumOption[this.ipForm.iptype[2]] + '格式入库';
-            } else if (this.ipForm.iptype[1] == 2) {
+            } else if (this.ipForm.iptype[1] === 2) {
               this.ipModdelTitle = 'WS-' + this.ipClassOptions[this.ipForm.iptype[1]] + '格式入库';
-            } else if (this.ipForm.iptype[1] == 3) {
+            } else if (this.ipForm.iptype[1] === 3) {
               this.ipModdelTitle = 'WS-' + this.ipClassOptions[this.ipForm.iptype[1]] + '格式入库';
             }
             this.ipModelWidth = '680px';
@@ -1041,7 +1056,7 @@ export default {
       this.batchArry = [];
       this.checkedNum = 0;
       this.groupIdx = idx;
-      this.model1.pgroup_id = idx == 'clear' ? '' : row.id;
+      this.model1.pgroup_id = idx === 'clear' ? '' : row.id;
       this.initiplist(1);
     },
     addContent(row, idx) {
@@ -1050,7 +1065,7 @@ export default {
       this.groupModel = true;
       this.$nextTick(() => {
         this.$refs.groupForm.resetFields();
-        if (idx == 1) return;
+        if (idx === 1) return;
         this.groupForm.title = row.name;
         this.groupForm.content = row.content;
       })
@@ -1087,18 +1102,18 @@ export default {
       this.cliHeight = document.documentElement.clientHeight - 380;
     },
     handleCommand(command) {
-      if (this.checkIdArry.length == 0) {
+      if (this.checkIdArry.length === 0) {
         return successTips(this,'error',this.$t('sys_c126'));
       }
       for (let k = 0; k < this.betchOption.length; k++) {
-        if (this.betchOption[k].label == command.label) {
+        if (this.betchOption[k].label === command.label) {
           this.setIpType = k;
           this.setIpName = this.betchOption[k].label;
         }
       }
-      if (this.setIpType == 0 || this.setIpType == 1 || this.setIpType == 2 || this.setIpType == 10) {
+      if (this.setIpType === 0 || this.setIpType === 1 || this.setIpType === 2 || this.setIpType === 10) {
         this.setIpModel = true;
-        if (this.setIpType == 10) {
+        if (this.setIpType === 10) {
           this.initCountry()
         }
         this.$nextTick(() => {
@@ -1116,12 +1131,12 @@ export default {
               instance.confirmButtonLoading = true;
               allPost[that.setIpType]({ ids: that.checkIdArry }).then(res => {
                 instance.confirmButtonLoading = false;
-                if (res.code != 0) return;
+                if (res.code !== 0) return;
                 that.initiplist();
-                if (that.setIpType == 8) {
+                if (that.setIpType === 8) {
                   that.initipGroup();
                 }
-                if (that.setIpType == 9) {
+                if (that.setIpType === 9) {
                   window.location.href = res.data.url
                 }
                 successTips(that)
@@ -1142,24 +1157,24 @@ export default {
         if (valid) {
           const allPost = [doexpiretime,doallotnum,domoveipgroup,docheckstatus,'','',dostartdistribution,dodisableallocation,dobatchdel,dooutputip,doupcountry,doipremark]
           const params = {}
-          this.setIpType == 11 ? params.id = this.ipForm.id : params.ids = this.checkIdArry;
-          if (this.setIpType == 0) {
+          this.setIpType === 11 ? params.id = this.ipForm.id : params.ids = this.checkIdArry;
+          if (this.setIpType === 0) {
             params.expire_time = Date.parse(this.$baseFun.resetTime(this.ipForm.expire_time)) / 1000;
-          } else if (this.setIpType == 1) {
+          } else if (this.setIpType === 1) {
             params.allot_num = Number(this.ipForm.allot_num)
-          } else if (this.setIpType == 2) {
+          } else if (this.setIpType === 2) {
             params.group_id = this.ipForm.group_id
-          } else if (this.setIpType == 10) {
+          } else if (this.setIpType === 10) {
             params.country = this.ipForm.country
-          } else if (this.setIpType == 11) {
+          } else if (this.setIpType === 11) {
             params.remark = this.ipForm.remock_text
           }
           this.isLoading = true;
           allPost[this.setIpType](params).then(res => {
             this.isLoading = false;
-            if (res.code != 0) return;
+            if (res.code !== 0) return;
             this.setIpModel = false;
-            if (this.setIpType == 2) {
+            if (this.setIpType === 2) {
               this.initipGroup();
             }
             this.initiplist();
@@ -1182,7 +1197,7 @@ export default {
       var blob = new Blob([textContent], { type: 'text/plain' });
       var a = document.createElement('a');
       a.href = window.URL.createObjectURL(blob);
-      a.download = this.ipForm.iptype[1] == 1 ? 'example-import-static-ip.txt' : 'example-import-dynamic-ip.txt';
+      a.download = this.ipForm.iptype[1] === 1 ? 'example-import-static-ip.txt' : 'example-import-dynamic-ip.txt';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

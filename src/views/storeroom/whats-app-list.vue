@@ -43,8 +43,8 @@
         <el-input v-model="queryData.today_text_fail_num" clearable placeholder="请输入目前文本失败数" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" type="primary" @click="initNumberList(null)">{{ $t('sys_c002') }}</el-button>
-        <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="initNumberList(null)">查询</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restQueryBtn">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -699,7 +699,7 @@ export default {
   created() {
     //   this.syncInitApi();
     this.initNumberGroup();
-    this.initNumberList();
+    this.initNumberList(1);
   },
   mounted() {
     this.setFullHeight();

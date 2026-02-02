@@ -5,10 +5,8 @@
         <el-input v-model="roleName" :placeholder="$t('sys_c022')" clearable size="small" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" size="small" type="primary" @click="initRoleList(1)">{{
-          $t('sys_c002')
-        }}
-        </el-button>
+        <el-button icon="el-icon-search" size="small" type="primary" @click="initRoleList(null)">查询</el-button>
+        <el-button size="small" icon="el-icon-refresh-right" @click="restTableQueryBtn">重置</el-button>
       </el-form-item>
       <el-form-item class="el-item-right">
         <el-button size="small" type="primary" @click="addRole(0,0)">{{ $t('sys_c034') }}</el-button>
@@ -176,6 +174,14 @@ export default {
         this.total = res.data.total;
         this.roleList = res.data.list || [];
       })
+    },
+    // 重置
+    restTableQueryBtn() {
+      this.offest = 1
+      this.limit = 10
+      this.status = ''
+      this.roleName = ''
+      this.initRoleList(1)
     },
     setPageSize() {
     },
