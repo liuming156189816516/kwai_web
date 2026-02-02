@@ -679,8 +679,7 @@ export default {
         { icon: 'download', label: '批量导出', index: 3, api: dooutputaccount },
         { icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount },
         { icon: 'edit', label: '批量修改备注', index: 5, api: doupremark },
-        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi },
-        { icon: 's-tools', label: '批量解冻', index: 12, api: batchUnfreezeAccountApi },
+        { icon: 'odometer', label: '批量解冻', index: 12, api: batchUnfreezeAccountApi },
       ]
     },
   },

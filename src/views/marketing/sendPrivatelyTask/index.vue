@@ -18,7 +18,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">查询</el-button>
+          <el-button icon="el-icon-search" type="primary" @click="getDataListFun(null)">查询</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">重置</el-button>
           <el-button type="primary" :disabled="!selectIdData.length" @click="batchCloseDataFun">批量关闭</el-button>
           <el-button type="primary" :disabled="!selectIdData.length" @click="delDataFun">批量删除</el-button>

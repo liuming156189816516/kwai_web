@@ -29,7 +29,7 @@
               <el-input v-model="queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
             </el-form-item>
             <el-form-item>
-              <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">查询</el-button>
+              <el-button icon="el-icon-search" type="primary" @click="getDataListFun(null)">查询</el-button>
               <el-button icon="el-icon-refresh-right" @click="resetTableFun(1)">重置</el-button>
             </el-form-item>
           </el-form>

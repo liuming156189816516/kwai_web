@@ -104,7 +104,7 @@ export const asyncRoutes = [
     path: '/marketing',
     component: Layout,
     name: 'marketing',
-    meta: { title: '营销管理', icon: 'el-icon-s-data' },
+    meta: { title: '营销管理', icon: 'el-icon-s-order' },
     children: [
       {
         path: '/sendPrivatelyTask',
@@ -121,7 +121,7 @@ export const asyncRoutes = [
     path: '/logManage',
     component: Layout,
     name: 'logManage',
-    meta: { title: '日志管理', icon: 'el-icon-s-data' },
+    meta: { title: '日志管理', icon: 'el-icon-s-claim' },
     children: [
       {
         path: '/reportLog',
