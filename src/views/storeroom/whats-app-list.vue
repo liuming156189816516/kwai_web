@@ -839,7 +839,7 @@ export default {
           if (action === 'confirm') {
             const params = {
               accounts: that.checkAccount,
-              ...that.queryConf
+              list_req: that.queryConf
             }
             instance.confirmButtonLoading = true;
             dobatchlogin(params).then(res => {
