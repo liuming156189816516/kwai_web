@@ -439,7 +439,6 @@ import {
   dobatchdelaccount,
   doupremark,
   sortgroup,
-  dobatchaccountdetailApi,
   dobatchlogin,
   setaccountunavailableApi, batchUnfreezeAccountApi,
 } from '@/api/storeroom'
@@ -471,6 +470,9 @@ export default {
         today_link_fail_num: '',
         today_text_success_num: '',
         today_text_fail_num: '',
+      },
+      queryConf:{
+
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -757,6 +759,7 @@ export default {
         today_text_success_num: Number(this.queryData.today_text_success_num) || 0,
         today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
       }
+      this.queryConf = deepClone(params)
 
       getaccountinfolist(params).then(res => {
         this.loading = false;
@@ -812,9 +815,9 @@ export default {
       this.batchOptionData.ipForm.account = '';
       this.blockAccount = [];
       this.inheritAccount = [];
-      // if (this.checkIdArray.length === 0) {
-      //   return successTips(this, 'error', '请勾选要操作的列表!');
-      // }
+      if (this.checkIdArray.length === 0 && command.item.label === '批量删除') {
+        return successTips(this, 'error', '请勾选要操作的列表!');
+      }
       this.batchOptionData.title = command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
       if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' || command.item.label === '批量解冻') {
@@ -836,7 +839,8 @@ export default {
         beforeClose: function(action, instance, done) {
           if (action === 'confirm') {
             const params = {
-              accounts: that.checkAccount
+              accounts: that.checkAccount,
+              ...this.queryConf
             }
             instance.confirmButtonLoading = true;
 
