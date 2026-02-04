@@ -472,9 +472,7 @@ export default {
         today_text_success_num: '',
         today_text_fail_num: '',
       },
-      queryConf:{
-
-      },
+      queryConf:{ },
       cliHeight: null,
       numGroupTotal: 0,
       accountDataList: [],
@@ -761,7 +759,7 @@ export default {
         today_text_fail_num: Number(this.queryData.today_text_fail_num) || 0,
       }
       this.queryConf = deepClone(params)
-
+      console.log('this.queryConf',this.queryConf)
       getaccountinfolist(params).then(res => {
         this.loading = false;
         this.queryData.total = res.data.total;
@@ -841,10 +839,9 @@ export default {
           if (action === 'confirm') {
             const params = {
               accounts: that.checkAccount,
-              ...this.queryConf
+              ...that.queryConf
             }
             instance.confirmButtonLoading = true;
-
             dobatchlogin(params).then(res => {
               instance.confirmButtonLoading = false;
               if (res.code !== 0) return;
