@@ -50,7 +50,7 @@
 
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button :disabled="idx===0||checkIdArray.length===0" type="primary" @click="batchLaunch"> 批量上线</el-button>
+        <el-button type="primary" @click="batchLaunch"> 批量上线</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
@@ -472,7 +472,7 @@ export default {
         today_text_success_num: '',
         today_text_fail_num: '',
       },
-      queryConf:{ },
+      queryConf: { },
       cliHeight: null,
       numGroupTotal: 0,
       accountDataList: [],
