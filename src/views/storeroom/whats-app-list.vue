@@ -442,6 +442,7 @@ import {
   dobatchlogin,
   setaccountunavailableApi, batchUnfreezeAccountApi,
 } from '@/api/storeroom'
+import { deepClone } from '@/utils';
 
 export default {
   data() {
