@@ -20,8 +20,8 @@
         <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDataListFun(null)">查询</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">重置</el-button>
-          <el-button type="primary" :disabled="!selectIdData.length" @click="batchCloseDataFun">批量关闭</el-button>
-          <el-button type="primary" :disabled="!selectIdData.length" @click="delDataFun">批量删除</el-button>
+          <el-button :disabled="!selectIdData.length" type="primary" @click="batchCloseDataFun">批量关闭</el-button>
+          <el-button :disabled="!selectIdData.length" type="primary" @click="delDataFun">批量删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -40,13 +40,13 @@
         v-loading="loading"
         :data="tableData"
         :height="cliHeight"
-        border
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(255, 255, 255,1)"
-        row-key="id"
-        style="width: 100%;"
-        show-summary
         :summary-method="getTableSumFun"
+        border
+        element-loading-background="rgba(255, 255, 255,1)"
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-summary
+        style="width: 100%;"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -79,7 +79,6 @@
         <el-table-column label="成功数" min-width="100" prop="sucess_num" />
         <el-table-column label="失败数" min-width="100" prop="fail_num" />
         <el-table-column label="任务状态" min-width="100" prop="status">
-
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
               <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
@@ -97,9 +96,38 @@
             </el-dropdown>
           </template>
           <template slot-scope="scope">
-            <el-tag :type="getLabelByVal(scope.row[scope.column.property], statusList,{ label: 'type', value: 'value' },)" size="small">
+            <el-tag
+              :type="getLabelByVal(scope.row[scope.column.property], statusList,{ label: 'type', value: 'value' },)"
+              size="small"
+            >
               {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
             </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="触发方式" min-width="100" prop="is_auto">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'is_auto','table')">
+              <span :class="[Number(queryData.is_auto) >0?'dropdown_title':'']" style="color:#909399">
+                触发方式  <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in isAutoList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===queryData.is_auto}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+          <template slot-scope="scope">
+            <!--            <el-tag-->
+            <!--              :type="getLabelByVal(scope.row[scope.column.property], isAutoList,{ label: 'type', value: 'value' },)"-->
+            <!--              size="small"-->
+            <!--            >-->
+            {{ getLabelByVal(scope.row[scope.column.property], isAutoList) || '-' }}
+            <!--            </el-tag>-->
           </template>
         </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
@@ -117,12 +145,13 @@
           label="操作"
           prop="operation"
           show-overflow-tooltip
-          width="240"
+          width="300"
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="quickSendFun(scope.row,)">快速私发</el-button>
             <el-button size="small" type="primary" @click.stop="openConfigModal(scope.row,'conf_str')">配置</el-button>
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">详情</el-button>
+            <el-button v-if="scope.row.is_auto==='2'" size="small" type="primary" @click.stop="openCloseFun(scope.row)">关闭</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -147,10 +176,10 @@
     <detailList ref="refDetailList" :modal-height:="cliHeight" />
     <!-- JSON 配置 -->
     <el-dialog
-      :title="configData.title"
-      center
-      :visible.sync="configData.show"
       :close-on-click-modal="false"
+      :title="configData.title"
+      :visible.sync="configData.show"
+      center
       width="60%"
       @close="closeConfigModal"
     >
@@ -191,12 +220,13 @@
 
 <script>
 import {
-  getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,
+  getDataApi, batchDelDataApi, batchCloseDataApi, addDataApi,closeDataApi
 } from './api';
-import { resetPage, successTips, getLabelByVal,zonedTimeToTimestamp } from '@/utils';
-import { formatTimestamp ,formatDecimal ,formatDateTime } from '@/filters'
+import { resetPage, successTips, getLabelByVal, zonedTimeToTimestamp } from '@/utils';
+import { formatTimestamp, formatDecimal, formatDateTime } from '@/filters'
 import actionModal from './components/actionModal'
 import detailList from './components/detailList'
+
 export default {
   name: 'SendPrivatelyTask',
   components: {
@@ -211,6 +241,7 @@ export default {
         total: 0,
         name: '',
         status: '',
+        is_auto: '',
         time: [],
         pageOption: resetPage(),
       },
@@ -219,12 +250,17 @@ export default {
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
       statusList: [
-        { label: '全部', value: '0',type: '' },
-        { label: '创建成功', value: '1',type: 'info' },
-        { label: '执行中', value: '2',type: 'warning' },
-        { label: '关闭任务', value: '3',type: 'danger' },
-        { label: '停止群发', value: '4',type: 'danger' },
-        { label: '已完成', value: '5',type: 'success' },
+        { label: '全部', value: '0', type: '' },
+        { label: '创建成功', value: '1', type: 'info' },
+        { label: '执行中', value: '2', type: 'warning' },
+        { label: '关闭任务', value: '3', type: 'danger' },
+        { label: '停止群发', value: '4', type: 'danger' },
+        { label: '已完成', value: '5', type: 'success' },
+      ],
+      isAutoList: [
+        { label: '全部', value: '0', type: '' },
+        { label: '手动', value: '1', type: '' },
+        { label: '自动', value: '2', type: '' },
       ],
       sendTypeList: [
         { label: '全部', value: '0' },
@@ -261,7 +297,7 @@ export default {
         },
         value: null
       },
-      showSumNum: [8, 9,10],
+      showSumNum: [8, 9, 10],
     }
   },
   mounted() {
@@ -295,6 +331,7 @@ export default {
         limit: this.queryData.limit,
         name: this.queryData.name,
         status: Number(this.queryData.status) || -1,
+        is_auto: Number(this.queryData.is_auto) || -1,
       }
       if (startTime && endTime) {
         params.start_time = startTime
@@ -307,6 +344,7 @@ export default {
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
             item.status = item.status ? String(item.status) : ''
+            item.is_auto = item.is_auto ? String(item.is_auto) : ''
             item.send_type = item.send_type ? String(item.send_type) : ''
             return item
           });
@@ -321,7 +359,7 @@ export default {
     },
     // 新建
     addOpenFun() {
-      this.$refs.refActionModal.open(null,'add')
+      this.$refs.refActionModal.open(null, 'add')
     },
     // 保存
     saveData(data) {
@@ -342,6 +380,30 @@ export default {
     // 详情
     openDetailListFun(row) {
       this.$refs.refDetailList.open(row)
+    },
+    // 关闭
+    openCloseFun(form) {
+      this.$confirm(`确认关闭吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: function(action, instance, done) {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            closeDataApi({ ids: [form.id] }).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
     },
     // 批量删除
     delDataFun() {
@@ -403,10 +465,10 @@ export default {
     },
     // 快速私法
     quickSendFun(item) {
-      this.$refs.refActionModal.open(item,'add')
+      this.$refs.refActionModal.open(item, 'add')
     },
     // 打开配置
-    openConfigModal(row,kay) {
+    openConfigModal(row, kay) {
       this.configData.show = true
       this.configData.kay = kay
       if (row[kay]) {
@@ -418,7 +480,7 @@ export default {
             value: this.configData.value[key]
           }
           if (key === 'send_type') {
-            item.value = getLabelByVal(String(item.value),this.sendTypeList)
+            item.value = getLabelByVal(String(item.value), this.sendTypeList)
           }
           return item
         })
@@ -539,7 +601,7 @@ export default {
 }
 
 .queryBox {
-  margin-bottom:12px;
+  margin-bottom: 12px;
 }
 
 .stateModal {
@@ -569,7 +631,7 @@ export default {
   cursor: pointer;
 }
 
-.configContent{
+.configContent {
   height: 70vh;
   padding: 15px;
   border: #333333 1px solid;

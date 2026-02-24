@@ -53,3 +53,12 @@ export const getUserListApi = (params) => {
         data: params
     })
 }
+
+// 关闭
+export const closeDataApi = (params) => {
+    return request({
+        url: '/sendmsg/dobatchclosesendmsgtask',
+        method: 'post',
+        data: params
+    })
+}

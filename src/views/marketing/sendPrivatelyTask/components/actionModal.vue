@@ -202,6 +202,18 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <h3 class="contTitle">触发方式</h3>
+          <el-divider />
+          <el-row :gutter="20">
+            <el-col :span="22">
+              <el-form-item label="触发方式：" prop="is_auto">
+                <el-radio-group v-model="formData.is_auto" @input="radioGroup">
+                  <el-radio :label="1">手动</el-radio>
+                  <el-radio :label="2">自动</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-form-item>
             <el-button :loading="modal.loading" type="primary" @click="submitForm('refFormData')">开始群发</el-button>
@@ -271,6 +283,7 @@ export default {
         max_time: 15,
         material_list: [],
         replace_num: 6,
+        is_auto: 1
       },
       totalNum: 0,
       formRules: {
@@ -279,6 +292,7 @@ export default {
         data_pack_id: [{ required: true, message: '请选择', trigger: 'change' }],
         material_list: [{ required: true, message: '请添加话术', trigger: 'change' ,type: 'array', }],
         send_type: [{ required: true, message: '请选择', trigger: 'change' }],
+        is_auto: [{ required: true, message: '请选择', trigger: 'change' }],
       },
       btnOption: ['添加素材'],
       accountGroupList: [], // 账号分组
@@ -309,6 +323,7 @@ export default {
           const data = deepClone(JSON.parse(form.conf_str))
           Object.assign(this.formData, {
             send_type: data.send_type,
+            is_auto: data.is_auto,
             send_num: data.send_num,
             min_time: data.min_time,
             max_time: data.max_time,
@@ -324,6 +339,7 @@ export default {
             group_id: '',
             data_pack_id: '',
             send_type: 2,
+            is_auto: 1,
             send_num: 5,
             min_time: 10,
             max_time: 15,
@@ -370,6 +386,7 @@ export default {
         group_id: '',
         data_pack_id: '',
         send_type: 2,
+        is_auto: 1,
         send_num: 5,
         min_time: 10,
         max_time: 15,
