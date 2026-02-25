@@ -145,7 +145,7 @@
           label="操作"
           prop="operation"
           show-overflow-tooltip
-          width="300"
+          width="340"
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="quickSendFun(scope.row,)">快速私发</el-button>

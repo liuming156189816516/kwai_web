@@ -207,7 +207,7 @@
           <el-row :gutter="20">
             <el-col :span="22">
               <el-form-item label="触发方式：" prop="is_auto">
-                <el-radio-group v-model="formData.is_auto" @input="radioGroup">
+                <el-radio-group v-model="formData.is_auto">
                   <el-radio :label="1">手动</el-radio>
                   <el-radio :label="2">自动</el-radio>
                 </el-radio-group>
