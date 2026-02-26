@@ -313,7 +313,7 @@
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="冻结时间" min-width="150" prop="freeze_time" show-overflow-tooltip>
+          <u-table-column label="冻结时间" min-width="150" prop="freeze_time" sortable="custom" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
             </template>
@@ -1020,6 +1020,9 @@ export default {
           case 'today_text_fail_num': // 目前文本失败数
             this.queryData.sort = '-' + prop
             break;
+          case 'freeze_time': // 冻结时间
+            this.queryData.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
@@ -1046,6 +1049,10 @@ export default {
             break;
           case 'today_text_fail_num': // 目前文本失败数
             this.queryData.sort = prop
+            break;
+          case 'freeze_time': // 冻结时间
+            this.queryData.sort = prop
+            break;
         }
       } else {
         this.queryData.sort = ''
