@@ -204,7 +204,7 @@ export default {
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
-          this.queryData.total = res.data.total
+          this.queryData.total = res.data.total > 0 ? res.data.total : 0
           this.tableData = res.data.list.map(item => {
             item.ptype = item.ptype ? String(item.ptype) : ''
             return item
