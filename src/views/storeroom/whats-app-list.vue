@@ -318,6 +318,11 @@
               {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
             </template>
           </u-table-column>
+          <u-table-column label="活跃时间" min-width="150" prop="active_time" sortable="custom" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row.active_time > 0 ? $baseFun.resetTime(scope.row.active_time * 1000) : '-' }}
+            </template>
+          </u-table-column>
         </u-table>
 
         <div class="layui_page">
@@ -1023,6 +1028,9 @@ export default {
           case 'freeze_time': // 冻结时间
             this.queryData.sort = '-' + prop
             break;
+          case 'active_time': // 活跃时间
+            this.queryData.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
@@ -1051,6 +1059,9 @@ export default {
             this.queryData.sort = prop
             break;
           case 'freeze_time': // 冻结时间
+            this.queryData.sort = prop
+            break;
+          case 'active_time': // 活跃时间
             this.queryData.sort = prop
             break;
         }
